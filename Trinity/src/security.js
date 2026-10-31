@@ -6,6 +6,13 @@ export async function hash(value) {
   return Buffer.from(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value))).toString('hex');
 }
 export async function equal(a, b) { return timingSafeEqual(Buffer.from(await hash(a)), Buffer.from(await hash(b))); }
+function normalizedEmails(value){return new Set(String(value||'').split(',').map(email=>email.trim().toLowerCase()).filter(Boolean));}
+export function isOwnerEmail(env,email){
+  const owners=normalizedEmails(env.TRINITY_OWNER_EMAILS);
+  const primary=String(env.TRINITY_OWNER_EMAIL||'').trim().toLowerCase();
+  if(primary)owners.add(primary);
+  return owners.has(String(email||'').trim().toLowerCase());
+}
 export async function validKey(token, env) {
   token=typeof token==='string'?token.trim():token;
   if (!token || token.length > 2048) return false;
@@ -48,11 +55,11 @@ export async function authenticate(request, env) {
     if(googleOnly){
       const row=await env.DB.prepare(`SELECT s.expires_at,s.email,u.role,u.status FROM ops_sessions s
         LEFT JOIN ops_users u ON lower(u.email)=lower(s.email) WHERE s.token_hash=?`).bind(digest).first();
-      if(row&&row.expires_at>Date.now()&&row.email&&row.status==='active')return {id:digest.slice(0,24),email:row.email,role:row.role};
+      if(row&&row.expires_at>Date.now()&&row.email&&row.status==='active')return {id:digest.slice(0,24),email:row.email,role:isOwnerEmail(env,row.email)?'owner':row.role};
     }else{
       const row = await env.DB.prepare('SELECT expires_at,email FROM ops_sessions WHERE token_hash = ?').bind(digest).first();
       if (row && row.expires_at > Date.now()) {
-        const owner=Boolean(row.email&&env.TRINITY_OWNER_EMAIL&&row.email.toLowerCase()===env.TRINITY_OWNER_EMAIL.toLowerCase());
+        const owner=isOwnerEmail(env,row.email);
         return { id: digest.slice(0, 24),email:row.email||null,role:owner?'owner':null,owner };
       }
     }

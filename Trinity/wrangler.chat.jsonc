@@ -1,0 +1,27 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "trinity-chat-inference",
+  "main": "services/chat-inference.js",
+  "account_id": "b60342e5e52f5646fbd4e913bb409334",
+  "compatibility_date": "2026-10-11",
+  "workers_dev": false,
+  "preview_urls": false,
+  "ai": {
+    "binding": "AI"
+  },
+  "version_metadata": {
+    "binding": "CF_VERSION_METADATA"
+  },
+  "observability": {
+    "enabled": true,
+    "logs": {
+      "enabled": true,
+      "invocation_logs": false
+    }
+  },
+  "vars": {
+    "AI_FAST_MODEL": "@cf/meta/llama-3.1-8b-instruct-fp8-fast",
+    "AI_FALLBACK_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    "AI_FAST_FALLBACK_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+  }
+}

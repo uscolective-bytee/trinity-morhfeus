@@ -1,37 +1,118 @@
+import {registerAppResource,registerAppTool,RESOURCE_MIME_TYPE} from '@modelcontextprotocol/ext-apps/server';
+import controlAppHtml from '../dist-mcp/control.html';
+import {infrastructureStatus} from './infrastructure.js';
+import {inspectProject,readProjectSource} from './project-evolution.js';
+import {createSelfImprovementProposal,approveSelfImprovementProposal,applySelfImprovementProposal,listSelfImprovementProposals} from './self-improvement.js';
+import {capabilityStatus} from './capability-status.js';
 import {McpServer} from '@modelcontextprotocol/server';
+import {TRINITY_VERSION,releaseMetadata} from './version.js';
+import {dailyPlanShape,createDailyPlan} from './daily-planner.js';
 import {createMcpHandler} from 'agents/mcp/server';
 import {z} from 'zod';
 import {AGENTS} from './registry.js';
 import {createJob,getJob,listJobs} from './jobs.js';
 import {searchMemory} from './tools.js';
-import {serviceStatus,readiness} from './services.js';
+import {callModel,serviceStatus,readiness} from './services.js';
+import {skillRegistry} from './skillRegistry.js';
 import {listPlugins} from './plugins.js';
 import {createSystemAction,getSystemAction,listSystemActions,approveSystemAction} from './system-actions.js';
 import {geminiProjectControlEnabled} from './ai-providers.js';
+import {TrinityCopilotAgent} from './copilot-agent.js';
+import {universalEcosystem} from './universal-ecosystem.js';
+import {runBrainCycle} from './brain.js';
+import {runEvolutionCycle} from './evolution.js';
+import {sharedNotesInput,syncSharedNotes} from './shared-notes.js';
+import {recordLedgerEntry,queryLedger} from './os-registry.js';
 
 const result=data=>({content:[{type:'text',text:JSON.stringify(data,null,2)}]});
 
 export function handleMcp(request,env,ctx,access={}){
   return createMcpHandler(()=>{
-  const server=new McpServer({name:'trinity',version:'9.4.3'});
+  const server=new McpServer({name:'trinity',version:TRINITY_VERSION});
+    const requireProjectAccess=()=>{if(access.projectControl!==true)throw new Error('Tento MCP klient nemá projektové oprávnenie.');};
+    server.registerTool('infrastructure_status',{description:'Stav konfigurácie domén, hostingu a vývoja Trinity.',inputSchema:{}},async()=>result(infrastructureStatus(env)));
+    server.registerTool('project_inspect',{description:'Nájde relevantné zdrojové súbory a presný commit Trinity.',inputSchema:{query:z.string().max(2000).default('')}},async({query})=>{requireProjectAccess();return result(await inspectProject(env,query));});
+    server.registerTool('project_read',{description:'Číta zdroj z GitHubu bez zapnutého PC.',inputSchema:{path:z.string().max(500),ref:z.string().regex(/^[a-f0-9]{40}$/).optional()}},async({path,ref})=>{requireProjectAccess();return result(await readProjectSource(env,path,ref));});
+    server.registerTool('list_improvements',{description:'Zoznam návrhov, stav ich integrácie a odkazy na PR.',inputSchema:{}},async()=>{requireProjectAccess();return result({items:await listSelfImprovementProposals(env)});});
+    server.registerTool('propose_improvement',{description:'Z bežného opisu pripraví opravu vo vetve a PR; testy a deploy sú samostatne evidované.',inputSchema:{title:z.string().min(3).max(120),description:z.string().min(10).max(4000)}},async args=>{requireProjectAccess();const p=await createSelfImprovementProposal(env,{...args,kind:'code_improvement'},'authenticated-mcp');await approveSelfImprovementProposal(env,p.id,'authenticated-mcp');return result(await applySelfImprovementProposal(env,p.id,'authenticated-mcp'));});
+    const ui='ui://trinity/control.html';
+    registerAppTool(server,'trinity_control_panel',{description:'Interaktívny panel Trinity pre MCP Apps; poskytuje aj plný textový stav.',inputSchema:z.object({}),_meta:{ui:{resourceUri:ui}}},async()=>result(infrastructureStatus(env)));
+    registerAppResource(server,'Trinity Control',ui,{},async()=>({contents:[{uri:ui,mimeType:RESOURCE_MIME_TYPE,text:controlAppHtml,_meta:{ui:{csp:{connectDomains:[],resourceDomains:[]}}}}]}));
+    server.registerTool('sync_shared_notes',{description:'Synchronizuje spoločné lokálne a cloudové poznámky s revíziami; konflikt neprepíše novšiu verziu.',inputSchema:sharedNotesInput.shape},async args=>result(await syncSharedNotes(env,args)));
+    server.registerTool('sovereign_ledger',{description:'Autoritatívny D1 ledger spolupráce. Completed vyžaduje evidence; zápis dokazuje iba D1 persistenciu.',
+      inputSchema:{action:z.enum(['append','list']),entry:z.record(z.string(),z.unknown()).optional(),query:z.record(z.string(),z.unknown()).optional()}},
+      async({action,entry,query})=>{
+        if(action==='append'){
+          if(!entry)return result({error:'Chýba ledger entry.'});
+          const persisted=await recordLedgerEntry(env,entry,access.principal);
+          return result({status:'persisted',entry:persisted,persistence_receipt:`ledger:${persisted.id}`});
+        }
+        return result(await queryLedger(env,query||{}));
+      });
     const projectControlAllowed=()=>access.projectControl?Promise.resolve(true):geminiProjectControlEnabled(env,env.TRINITY_OWNER_EMAIL||'');
 
     server.registerTool('trinity_status',{description:'Overí aktuálnu pripravenosť jadra a stav registra pluginov. Netvrdí prístup k PC ani ROOT_ADMIN.',inputSchema:{}},
       async()=>{
         const state=await readiness(env);
         const plugins=env.DB?await listPlugins(env):[];
-        return result({service:'trinity',mcp_version:'9.4.3',...state,plugins:{catalog:plugins.length,installed:plugins.filter(p=>p.installed).length,enabled:plugins.filter(p=>p.enabled).length},pc_access:'not-checked',checked_at:new Date().toISOString()});
+        return result({service:'trinity',mcp_version:TRINITY_VERSION,deployment:releaseMetadata(env),...state,plugins:{catalog:plugins.length,installed:plugins.filter(p=>p.installed).length,enabled:plugins.filter(p=>p.enabled).length},ecosystem:universalEcosystem.getStats(),pc_access:'not-checked',checked_at:new Date().toISOString()});
+      });
+
+    server.registerTool('get_capability_status',{description:'Rozlisuje konfiguraciu, spojenie s PC a skutocne doklady vykonania za poslednych 15 minut.',inputSchema:{}},async()=>result(await capabilityStatus(env)));
+
+    server.registerTool('create_daily_plan',{description:'Pripraví slovenský denný plán z dodaných úloh, bez zmien kalendára. Vyžaduje UUID idempotency_key; vrátené ID je zaradenie. Výsledok načítaj cez get_task.',inputSchema:dailyPlanShape},
+      async args=>result(await createDailyPlan(env,args)));
+
+    server.registerTool('trinity_memory_sync',{description:'Zápis, čítanie a vyhľadávanie v zdieľanej sémantickej pamäti Trinity medzi ChatGPT, Gemini, Copilotom a Antigravity.',
+      inputSchema:{action:z.enum(['read','write','search']),key:z.string().max(200).optional(),payload:z.string().max(10000).optional(),source_agent:z.enum(['chatgpt','gemini','copilot','antigravity','trinity']).default('trinity')}},
+      async({action,key,payload,source_agent})=>{
+        if(action==='search'){
+          const q=key||payload||'';
+          return result(await searchMemory(env,q));
+        }
+        if(action==='read'){
+          if(!key)return result({error:'Chýba kľúč pamäte pre čítanie.'});
+          const row=await env.DB.prepare('SELECT key,value,source,updated_at FROM ops_memory WHERE key=?').bind(key ?? null).first();
+          return result(row||{found:false,key});
+        }
+        if(action==='write'){
+          if(!key||!payload)return result({error:'Chýba kľúč alebo obsah pre zápis.'});
+          await env.DB.prepare("INSERT INTO ops_memory(key,value,source,updated_at) VALUES(?,?,?,datetime('now')) ON CONFLICT(key) DO UPDATE SET value=excluded.value,source=excluded.source,updated_at=datetime('now')").bind(key ?? null, payload ?? null, (`agent:${source_agent}`) ?? null).run();
+          return result({status:'saved',key,source_agent,updated_at:new Date().toISOString()});
+        }
+        return result({error:'Neznáma akcia pamäte.'});
+      });
+
+    server.registerTool('dispatch_to_agent',{description:'Prepošle úlohu do iného AI systému (Gemini, OpenAI / ChatGPT, alebo Microsoft Copilot Studio).',
+      inputSchema:{target:z.enum(['gemini','openai','copilot_studio']),prompt:z.string().min(1).max(12000),context_key:z.string().max(200).optional()}},
+      async({target,prompt,context_key})=>{
+        let contextPrefix='';
+        if(context_key){
+          const mem=await env.DB.prepare('SELECT value FROM ops_memory WHERE key=?').bind(context_key ?? null).first();
+          if(mem?.value)contextPrefix=`[Kontext z pamäte ${context_key}]:\n${mem.value}\n\n`;
+        }
+        const fullPrompt=contextPrefix+prompt;
+        if(target==='copilot_studio'){
+          const fn=skillRegistry.get('copilotStudioAsk');
+          if(!fn)return result({error:'Skill copilotStudioAsk nie je dostupný.'});
+          return result(await fn({query:fullPrompt},env));
+        }
+        if(target==='openai'||target==='gemini'){
+          const response=await callModel(env,target,[{role:'user',content:fullPrompt}],2000);
+          return result({target,response,timestamp:new Date().toISOString()});
+        }
+        return result({error:`Neznámy cieľový agent: ${target}`});
       });
 
     // ── Pôvodné nástroje ──
-    server.registerTool('list_agents',{description:'Zoznam 40 špecialistov Trinity.',inputSchema:{}},
+    server.registerTool('list_agents',{description:`Zoznam ${AGENTS.length} špecialistov Trinity.`,inputSchema:{}},
       async()=>result(AGENTS));
 
     server.registerTool('dispatch_task',{description:'Spustí skutočnú úlohu. Vrátené ID znamená zaradenie, nie dokončenie.',
       inputSchema:{task:z.string().min(1).max(12000),agent:z.string().optional(),mode:z.enum(['single','team']).optional(),
         provider:z.enum(['workers-ai','openai','gemini','ollama','local']).optional(),
         language:z.enum(['sk','en']).optional(),idempotency_key:z.string().uuid().optional()}},
-      async args=>result(await createJob(env,args)));
+      async args=>result(await createJob(env,{...args,owner_mode:args.owner_mode!==undefined?args.owner_mode:true})));
 
     server.registerTool('get_task',{description:'Priebeh, nástroje a výsledky vykonávanej úlohy.',
       inputSchema:{id:z.string().uuid()}},
@@ -139,6 +220,37 @@ export function handleMcp(request,env,ctx,access={}){
         const action=await createSystemAction(env,{action:'run',payload:{command,cwd},rationale:`MCP: ${rationale}`},'mcp:trinity');
         return result({id:action.id,approval_required:true,note:`SCHVÁĽ ${action.id}`});
       });
+
+    // ── Trinity Copilot & Univerzálny Ekosystém nástroje ──
+    server.registerTool('copilot_chat',{description:'Vykoná inteligentný dotaz cez Trinity Copilot Agenta s podporou skillov, pluginov a hĺbkovej analýzy.',
+      inputSchema:{query:z.string().min(1).max(12000),session_id:z.string().uuid().optional(),agent:z.string().optional()}},
+      async({query,session_id,agent})=>result(await TrinityCopilotAgent(query,env,{sessionId:session_id,agentName:agent})));
+
+    server.registerTool('ecosystem_stats',{description:'Vráti živé štatistiky a kapacity univerzálneho ekosystému aplikácií, pluginov a skillov Trinity.',
+      inputSchema:{}},
+      async()=>result(universalEcosystem.getStats()));
+
+    server.registerTool('search_ecosystem',{description:'Vyhľadáva v ekosystéme aplikácie, pluginy a skilly podľa dotazu alebo domény.',
+      inputSchema:{query:z.string().default(''),type:z.enum(['app','plugin','skill']).optional(),domain:z.string().optional()}},
+      async({query,type,domain})=>result(universalEcosystem.searchCatalog(query,{type,domain})));
+
+    server.registerTool('synthesize_skill',{description:'Dynamicky vytvorí a zaregistruje nový operačný skill do Trinity za behu.',
+      inputSchema:{name:z.string().min(2).max(100),domain:z.string().default('software-dev')}},
+      async({name,domain})=>result(universalEcosystem.synthesizeSkill(name,domain)));
+
+    server.registerTool('synthesize_plugin',{description:'Dynamicky vytvorí a zaregistruje nový plugin spájajúci vybrané skilly.',
+      inputSchema:{name:z.string().min(2).max(100),domain:z.string().default('software-dev'),skills:z.array(z.string()).default([])}},
+      async({name,domain,skills})=>result(universalEcosystem.synthesizePlugin(name,domain,skills)));
+
+    server.registerTool('synthesize_app',{description:'Dynamicky navrhne novú aplikáciu v rámci ekosystému Trinity.',
+      inputSchema:{name:z.string().min(2).max(100),domain:z.string().default('software-dev'),type:z.string().default('web-app')}},
+      async({name,domain,type})=>result(universalEcosystem.synthesizeApp(name,domain,{type})));
+
+    server.registerTool('trigger_brain_cycle',{description:'Spustí autonómny cyklus mozgu Trinity (kontrola stavu a úloh).',inputSchema:{}},
+      async()=>result(await runBrainCycle(env)));
+
+    server.registerTool('trigger_evolution_cycle',{description:'Spustí evolučný cyklus analýzy chýb a seba-zdokonaľovania.',inputSchema:{}},
+      async()=>result(await runEvolutionCycle(env)));
 
     return server;
   },{route:'/mcp'})(request,env,ctx);

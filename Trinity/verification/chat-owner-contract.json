@@ -1,0 +1,41 @@
+{
+  "checked_at": "2026-10-26T04:56:02.889Z",
+  "scope": "offline-control-flow-only",
+  "live_chat_verified": false,
+  "passed": 8,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "legacy tool arguments preserved",
+      "status": "passed"
+    },
+    {
+      "name": "function-shaped tool call is executable rather than printed JSON",
+      "status": "passed"
+    },
+    {
+      "name": "ordinary answer preserved",
+      "status": "passed"
+    },
+    {
+      "name": "simulation markers rejected",
+      "status": "passed"
+    },
+    {
+      "name": "failed deployment receipt cannot support success",
+      "status": "passed"
+    },
+    {
+      "name": "a read receipt cannot support a payment",
+      "status": "passed"
+    },
+    {
+      "name": "real calculator execution in offline control flow produces a receipt",
+      "status": "passed"
+    },
+    {
+      "name": "unsupported deployment claim does not escape the engine",
+      "status": "passed"
+    }
+  ]
+}

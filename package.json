@@ -2,9 +2,19 @@
   "name": "trinity-morhfeus-root",
   "private": true,
   "version": "1.0.0",
+  "license": "MIT",
+  "author": "Ivan Sabo (Basterix31) <saboivan2008@gmail.com>",
   "scripts": {
     "sync": "powershell -ExecutionPolicy Bypass -File ./SYNC-BUILD.ps1 -Full -Test",
     "build": "powershell -ExecutionPolicy Bypass -File ./SYNC-BUILD.ps1 -Full -Test",
-    "deploy": "powershell -ExecutionPolicy Bypass -File ./SYNC-BUILD.ps1 -Full -Test -Deploy"
+    "deploy": "powershell -ExecutionPolicy Bypass -File ./SYNC-BUILD.ps1 -Full -Test -Deploy",
+    "test": "npm --prefix Trinity test",
+    "check": "node scripts/run-all-tests.mjs",
+    "deploy:all": "node scripts/deploy-all-workers.mjs",
+    "gemini:chat": "node scripts/gemini-dev-chat.mjs"
+  },
+  "dependencies": {
+    "ethers": "^6.17.0",
+    "npx": "^10.2.2"
   }
 }

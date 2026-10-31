@@ -67,11 +67,38 @@ export class PCBridgeDurableObject extends DurableObject {
   }
 }
 
+export const PC_BRIDGE_SKILLS = [
+  { name: 'heartbeat', description: 'Record heartbeat telemetry from local PC bridge gateway', parameters: ['gateway_id', 'version', 'capabilities'] },
+  { name: 'recordAction', description: 'Record and track execution of a local action event', parameters: ['id', 'action', 'status', 'requested_by'] },
+  { name: 'getStatus', description: 'Get connection status, last seen timestamp, and action history', parameters: [] },
+  { name: 'checkConnectivity', description: 'Verify whether PC gateway is actively connected (<45s)', parameters: [] }
+];
+
+export const PC_BRIDGE_PLUGINS = [
+  { id: 'gateway-link', name: 'Secure PC Gateway Link Protocol', version: '2.0.0', status: 'active' },
+  { id: 'action-ledger', name: 'Transactional Action Event Ledger', version: '2.0.0', status: 'active' },
+  { id: 'secret-auth', name: 'Timing-Safe SHA-256 Bridge Authenticator', version: '2.0.0', status: 'active' }
+];
+
 export default class PCBridgeService extends WorkerEntrypoint {
   coordinator(){return this.env.PC_BRIDGE.getByName('trinity-primary-pc');}
   async heartbeat(event){return this.coordinator().heartbeat(event);}
   async recordAction(event){return this.coordinator().recordAction(event);}
   async getStatus(){return this.coordinator().status();}
+  listSkills(){return PC_BRIDGE_SKILLS;}
+  listPlugins(){return PC_BRIDGE_PLUGINS;}
+  async executeSkill(name, params = {}){
+    switch(name){
+      case 'heartbeat': return this.heartbeat(params);
+      case 'recordAction': return this.recordAction(params);
+      case 'getStatus': return this.getStatus();
+      case 'checkConnectivity': {
+        const s = await this.getStatus();
+        return { connected: s.connected, last_seen: s.last_seen, gateway_id: s.gateway_id };
+      }
+      default: return { ok: false, error: `Neznámy skill pre PC-Bridge-Worker: ${name}` };
+    }
+  }
 
   async fetch(request){
     const url=new URL(request.url);

@@ -1,0 +1,203 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "TRINITY Sovereign Pentad MCP Gateway",
+    "version": "11.0.0",
+    "description": "Jednotný Model Context Protocol (MCP) a REST router prepájajúci Cloudflare Sovereign Core (Trinity), Antigravity IDE, Google Gemini, Microsoft Copilot Studio (crm17) a ChatGPT/Codex.",
+    "contact": {
+      "name": "Sabo Ivan / Basterix",
+      "email": "saboivan2008@gmail.com",
+      "url": "https://auru.space"
+    },
+    "license": {
+      "name": "Proprietary Sovereign License (TRINITY-DEED-20261025-001)"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://auru.space",
+      "description": "TRINITY Sovereign Production Hub (Cloudflare Edge)"
+    },
+    {
+      "url": "https://auru.dev",
+      "description": "TRINITY Sovereign Staging & Development Hub"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/mcp": {
+      "post": {
+        "operationId": "callMcpJsonRpc",
+        "summary": "Štandardný JSON-RPC 2.0 vstup pre MCP klientov (Antigravity, Gemini CLI, Claude, Copilot)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JsonRpcRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JSON-RPC 2.0 odpoveď obsahujúca výsledok MCP nástroja",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JsonRpcResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Neautorizovaný prístup (chýba alebo neplatný Bearer token)"
+          }
+        }
+      }
+    },
+    "/api/mcp/invoke": {
+      "post": {
+        "operationId": "invokePentadTool",
+        "summary": "REST Action Wrapper pre Microsoft Copilot Studio Custom Connector a ChatGPT Custom Actions",
+        "description": "Umožňuje systémom, ktoré nepodporujú natívny JSON-RPC, vyvolať ľubovoľný nástroj z flotily Trinity cez jednoduchý REST POST.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ToolInvokeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Úspešné vykonanie nástroja s auditným dokladom receipt_id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolInvokeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Neplatné argumenty alebo chýbajúci názov nástroja"
+          },
+          "401": {
+            "description": "Neautorizovaný prístup"
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "getEcosystemHealth",
+        "summary": "Stav zdravia a pripravenosti flotily 29 služieb Trinity",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Zdravie ekosystému, verzia a stav prepojení",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "service": { "type": "string", "example": "Trinity" },
+                    "version": { "type": "string", "example": "11.0.0" },
+                    "status": { "type": "string", "example": "serving" },
+                    "truth_mode": { "type": "string", "example": "evidence-required" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT/DPAPI",
+        "description": "Chránený token Trinity MCP Hubu"
+      }
+    },
+    "schemas": {
+      "JsonRpcRequest": {
+        "type": "object",
+        "required": ["jsonrpc", "id", "method"],
+        "properties": {
+          "jsonrpc": { "type": "string", "enum": ["2.0"] },
+          "id": { "type": ["string", "number"], "example": 1 },
+          "method": { "type": "string", "example": "tools/call" },
+          "params": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string", "example": "trinity_status" },
+              "arguments": { "type": "object" }
+            }
+          }
+        }
+      },
+      "JsonRpcResponse": {
+        "type": "object",
+        "required": ["jsonrpc", "id"],
+        "properties": {
+          "jsonrpc": { "type": "string", "enum": ["2.0"] },
+          "id": { "type": ["string", "number"], "example": 1 },
+          "result": { "type": "object" },
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": { "type": "number" },
+              "message": { "type": "string" }
+            }
+          }
+        }
+      },
+      "ToolInvokeRequest": {
+        "type": "object",
+        "required": ["tool"],
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Názov nástroja z Pentad katalógu",
+            "enum": [
+              "trinity_status",
+              "pc_status",
+              "search_memory",
+              "dispatch_task",
+              "get_task",
+              "trinity_memory_sync",
+              "dispatch_to_agent"
+            ],
+            "example": "trinity_status"
+          },
+          "arguments": {
+            "type": "object",
+            "description": "Parametre vyvolávaného nástroja",
+            "example": {}
+          }
+        }
+      },
+      "ToolInvokeResponse": {
+        "type": "object",
+        "required": ["status", "tool", "result"],
+        "properties": {
+          "status": { "type": "string", "example": "completed" },
+          "tool": { "type": "string", "example": "trinity_status" },
+          "receipt_id": { "type": "string", "example": "TRN-RCPT-M018-AB34" },
+          "result": { "type": "object" }
+        }
+      }
+    }
+  }
+}

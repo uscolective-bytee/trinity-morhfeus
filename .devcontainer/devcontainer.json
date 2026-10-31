@@ -1,0 +1,10 @@
+{
+  "name": "Trinity development and deployment",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm",
+  "remoteUser": "node",
+  "forwardPorts": [8787],
+  "portsAttributes": {
+    "8787": { "label": "Trinity local development", "onAutoForward": "notify", "visibility": "private" }
+  },
+  "postCreateCommand": "bash scripts/trinity-environment.sh setup"
+}

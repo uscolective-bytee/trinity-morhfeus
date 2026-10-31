@@ -1,0 +1,40 @@
+{
+    email saboivan2008@gmail.com
+    admin off
+}
+
+# Production Morpheus Host for aura.dev and auru.dev
+morpheus.aura.dev, morpheus.auru.dev {
+    encode gzip zstd
+
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "strict-origin-when-cross-origin"
+    }
+
+    handle /health {
+        reverse_proxy morpheus-api:8000
+    }
+
+    handle /api/v1/auth/* {
+        reverse_proxy morpheus-api:8000
+    }
+
+    handle /api/v1/webhooks/* {
+        reverse_proxy morpheus-api:8000
+    }
+
+    handle /l/* {
+        reverse_proxy morpheus-api:8000
+    }
+
+    handle /p/* {
+        reverse_proxy morpheus-api:8000
+    }
+
+    handle /* {
+        reverse_proxy morpheus-api:8000
+    }
+}

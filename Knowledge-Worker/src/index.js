@@ -19,6 +19,7 @@ export class KnowledgeStore extends DurableObject {
       return {id:doc.source_id,title:doc.title,text:doc.text,hash,origin,url,updated_at,unchanged:false};
     });
   }
+  status(){return {service:'trinity-knowledge',ready:true,documents:this.sql.exec('SELECT COUNT(*) AS n FROM documents').one().n,checked_at:new Date().toISOString()};}
   get(id){return this.sql.exec('SELECT * FROM documents WHERE id=?',id).toArray()[0]||null;}
   search(query){const words=terms(query);if(!words.length)return {passages:[],untrusted_context:true};
     const score=words.map(()=>'(CASE WHEN instr(c.search_text,?)>0 THEN 1 ELSE 0 END)').join('+');
@@ -26,9 +27,36 @@ export class KnowledgeStore extends DurableObject {
     return {passages:rows.map(r=>({...r,stale:Date.now()-Date.parse(r.updated_at)>604800000})),untrusted_context:true,verified_content:false};
   }
 }
+export const KNOWLEDGE_SKILLS = [
+  { name: 'storeDocument', description: 'Store, chunk, and index a document in the Durable Object SQLite store', parameters: ['title', 'text', 'source_id'] },
+  { name: 'searchKnowledge', description: 'Execute semantic multi-term keyword search over chunked documents', parameters: ['query'] },
+  { name: 'refreshCatalog', description: 'Download and refresh catalog document', parameters: ['id'] },
+  { name: 'getDocument', description: 'Retrieve a stored document by source ID', parameters: ['id'] },
+  { name: 'auditKnowledge', description: 'Audit document count, storage integrity, and health status', parameters: [] }
+];
+
+export const KNOWLEDGE_PLUGINS = [
+  { id: 'sqlite-durable-index', name: 'DO SQLite Full-Text Chunk Indexer', version: '2.0.0', status: 'active' },
+  { id: 'catalog-downloader', name: 'Automated Catalog Knowledge Synchronizer', version: '2.0.0', status: 'active' },
+  { id: 'passage-scorer', name: 'Ranked Multi-Term Passage Scoring Engine', version: '2.0.0', status: 'active' }
+];
+
 export default class KnowledgeService extends WorkerEntrypoint {
   store(){return this.env.KNOWLEDGE.get(this.env.KNOWLEDGE.idFromName('primary'));}
   getCatalog(){return catalog;}
+  getStatus(){return this.store().status();}
+  listSkills(){return KNOWLEDGE_SKILLS;}
+  listPlugins(){return KNOWLEDGE_PLUGINS;}
+  async executeSkill(name, params = {}){
+    switch(name){
+      case 'storeDocument': return this.importDocument(params);
+      case 'searchKnowledge': return this.search(params.query || '');
+      case 'refreshCatalog': return this.refresh(params.id);
+      case 'getDocument': return this.getDocument(params.id);
+      case 'auditKnowledge': return this.getStatus();
+      default: return { ok: false, error: `Neznámy skill pre Knowledge-Worker: ${name}` };
+    }
+  }
   importDocument(input){return this.store().put(document(input));}
   async refresh(id){const doc=await download(id);return this.store().put(doc,'catalog-fetch',doc.url);}
   search(query){return this.store().search(query);}

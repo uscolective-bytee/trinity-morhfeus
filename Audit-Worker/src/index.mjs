@@ -1,4 +1,5 @@
 /** Dedicated, scoped CI audit ingestion. No arbitrary SQL, no admin API, no deploy capability. */
+import openapi from './openapi.mjs';
 const encoder = new TextEncoder();
 const json = (body,status=200) => Response.json(body,{status,headers:{'Cache-Control':'no-store'}});
 const MAX_BYTES = 4096;
@@ -38,6 +39,7 @@ export async function verifySignature(headers,raw,secret,nowMs=Date.now()){
 }
 export async function handleRequest(request,env){
   const path=new URL(request.url).pathname;
+  if(path==='/openapi.json'&&request.method==='GET')return json(openapi);
   if(path==='/health'&&request.method==='GET') return json({service:'trinity-audit',ready:Boolean(env?.DB?.prepare&&env?.AUDIT_HMAC_KEY?.length>=32&&env?.AUDIT_ALLOWED_REPOS)},env?.DB?.prepare&&env?.AUDIT_HMAC_KEY?.length>=32&&env?.AUDIT_ALLOWED_REPOS?200:503);
   if(path!=='/v1/audit') return json({error:'Not found'},404);
   if(request.method!=='POST') return json({error:'Method not allowed'},405);
@@ -55,10 +57,10 @@ export async function handleRequest(request,env){
   const id=crypto.randomUUID(),timestamp=new Date().toISOString(),digest=await sha256(raw);
   try{
     const result=await env.DB.prepare(
-      'INSERT INTO audit_log (id,repo,sha,status,trigger,actor,branch,environment,duration_ms,ts,request_hash,idempotency_key) VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(idempotency_key) DO NOTHING'
+      'INSERT INTO ops_ci_audit_log (id,repo,sha,status,trigger,actor,branch,environment,duration_ms,ts,request_hash,idempotency_key) VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(idempotency_key) DO NOTHING'
     ).bind(id,payload.repo,payload.sha.toLowerCase(),payload.status,payload.trigger,payload.actor??null,payload.branch??null,payload.environment??null,payload.duration_ms??null,timestamp,digest,payload.event_id).run();
     if(result.meta?.changes===0){
-      const existing=await env.DB.prepare('SELECT id,request_hash FROM audit_log WHERE idempotency_key=?').bind(payload.event_id).first();
+      const existing=await env.DB.prepare('SELECT id,request_hash FROM ops_ci_audit_log WHERE idempotency_key=?').bind(payload.event_id).first();
       if(!existing||existing.request_hash!==digest)return json({error:'Idempotency key conflict'},409);
       return json({ok:true,id:existing.id,duplicate:true});
     }

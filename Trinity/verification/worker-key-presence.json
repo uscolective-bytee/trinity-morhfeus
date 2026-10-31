@@ -1,0 +1,41 @@
+{
+  "checked_at": "2026-10-25T19:27:32.476Z",
+  "values_read": false,
+  "rotation_performed": false,
+  "environments": {
+    "production": {
+      "secret_count": 27,
+      "routes": [
+        "auru.space",
+        "auru.dev"
+      ],
+      "groups": {
+        "ai": {
+          "GEMINI_API_KEY": "secret-present",
+          "OPENAI_API_KEY": "secret-present",
+          "OLLAMA_API_KEY": "secret-present",
+          "GROQ_API_KEY": "not-present",
+          "DEEPSEEK_API_KEY": "not-present",
+          "ANTHROPIC_API_KEY": "not-present",
+          "MISTRAL_API_KEY": "not-present",
+          "OPENROUTER_API_KEY": "not-present"
+        },
+        "security": {
+          "TRINITY_SESSION_SECRET": "secret-present",
+          "TRINITY_VAULT_KEY": "secret-present"
+        },
+        "operations": {
+          "TRINITY_OPS_KEY": "secret-present",
+          "TRINITY_GATEWAY_KEY": "secret-present",
+          "TRINITY_GITHUB_TOKEN": "secret-present",
+          "CF_API_TOKEN": "secret-present"
+        },
+        "google": {
+          "GOOGLE_CLIENT_ID": "configured-variable",
+          "GOOGLE_CLIENT_SECRET": "not-present"
+        }
+      },
+      "note": "Presence is not provider verification. AI binding is separate. No environment credentials are copied."
+    }
+  }
+}

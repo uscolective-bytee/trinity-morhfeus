@@ -1,0 +1,24 @@
+diff --git a/Trinity/public/assistant/chat.html b/Trinity/public/assistant/chat.html
+--- a/Trinity/public/assistant/chat.html
++++ b/Trinity/public/assistant/chat.html
+@@
+-<div class="compose-bottom"><div class="compose-settings"><select id="engine" aria-label="AI engine">
++<div class="compose-bottom"><div class="compose-settings"><label class="sr-only" for="pentad-node">Pentad node</label><select id="pentad-node" aria-label="Pentad node"><option value="auto" selected>⚪ Auto</option><option value="cloud">🟢 Edge AI</option><option value="gemini">🔵 Gemini</option><option value="copilot" disabled>🟣 Copilot · neoverené</option></select><select id="engine" aria-label="AI engine">
+diff --git a/Trinity/public/assistant/chat.js.txt b/Trinity/public/assistant/chat.js.txt
+--- a/Trinity/public/assistant/chat.js.txt
++++ b/Trinity/public/assistant/chat.js.txt
+@@
+ let language=localStorage.getItem('trinity-language')||'auto',session=localStorage.getItem('trinity-chat-session')||crypto.randomUUID(),state=null,controller=null,currentView='chat',currentStudio=null,studioBlobUrl=null,settingsFilter='all';
++const pentadNode=()=>{const value=$('pentad-node')?.value||'auto';return ['auto','cloud','gemini','copilot'].includes(value)?value:'auto';};
++function applyPentadAvailability(){const select=$('pentad-node');if(!select)return;const option=select.querySelector('option[value="copilot"]');const ready=state?.integrations?.copilot_studio?.status==='verified';if(option){option.disabled=!ready;option.textContent=ready?'🟣 Copilot':'🟣 Copilot · neoverené';}const saved=localStorage.getItem('trinity-pentad-node')||'auto';select.value=[...select.options].some(item=>item.value===saved&&!item.disabled)?saved:'auto';select.onchange=()=>localStorage.setItem('trinity-pentad-node',select.value);}
+@@
+-  const r=await fetch('/api/assistant/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text,session,language,engine:$('engine').value,remember:$('remember').checked,allow_files:$('allow-files').checked}),signal:controller.signal});
++  const selectedNode=pentadNode();if(selectedNode==='copilot'&&state?.integrations?.copilot_studio?.status!=='verified')throw new Error('Copilot Studio nie je overene pripojené.');
++  const r=await fetch('/api/assistant/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text,session,language,engine:selectedNode==='auto'?$('engine').value:selectedNode,preferred_node:selectedNode,remember:$('remember').checked,allow_files:$('allow-files').checked}),signal:controller.signal});
+
+# Integration note
+# Do not apply until the backend chat schema accepts `preferred_node`, returns
+# `state.integrations.copilot_studio.status`, and maps `copilot` to the existing
+# authenticated `copilotStudioAsk` adapter. The current UI already exposes a
+# detailed engine selector, so product review should decide whether both controls
+# remain visible or the detailed selector moves to Settings.

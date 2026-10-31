@@ -8,6 +8,10 @@ on:
       - 'Audit-Worker/**'
       - 'PC-Bridge-Worker/**'
       - 'Local-Gateway/**'
+      - 'Local-Desktop/**'
+      - 'src/**'
+      - 'tests/**'
+      - 'package.json'
       - '.github/**'
   pull_request:
     branches: [main]
@@ -16,6 +20,10 @@ on:
       - 'Audit-Worker/**'
       - 'PC-Bridge-Worker/**'
       - 'Local-Gateway/**'
+      - 'Local-Desktop/**'
+      - 'src/**'
+      - 'tests/**'
+      - 'package.json'
       - '.github/**'
   workflow_dispatch:
 
@@ -34,7 +42,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: '22'
           cache: npm
@@ -46,6 +54,9 @@ jobs:
       - name: Install Trinity dependencies
         working-directory: Trinity
         run: npm ci
+
+      - name: Check synchronized release documentation
+        run: npm run docs:check
 
       - name: Audit dependencies (high+)
         working-directory: Trinity
@@ -62,6 +73,12 @@ jobs:
       - name: Run signed Audit Worker tests
         run: node --test Audit-Worker/tests/*.test.mjs
 
+      - name: Validate legacy root entry points against canonical sources
+        run: node --test tests/*.test.mjs
+
+      - name: Validate unified local desktop and provider adapters
+        run: node --test Local-Desktop/tests/*.test.mjs
+
       - name: Validate PC Bridge Worker
         run: |
           npm ci --prefix PC-Bridge-Worker
@@ -73,7 +90,7 @@ jobs:
           npm test --prefix Local-Gateway
 
       - name: Validate AI Change Policy against JSON Schema (Ajv)
-        run: npx --yes ajv-cli@5.0.0 validate -s .github/ai-change-policy.schema.json -d .github/ai-change.json
+        run: npx --yes --package=ajv-cli@5.0.0 --package=ajv-formats@3.0.1 ajv validate -c ajv-formats -s .github/ai-change-policy.schema.json -d .github/ai-change.json
 
       - name: Emit signed audit receipt on main (fail closed)
         if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'

@@ -27,8 +27,11 @@ export default {async fetch(request,env){
       const prompt=boundedString(d.prompt,'prompt',{required:true,min:3,max:8000});
       const language=boundedString(d.language??'typescript','language',{min:1,max:40});
       if(!env.AI)throw Object.assign(new Error('AI binding is unavailable'),{status:503});
-      const output=await env.AI.run('@cf/meta/llama-3.1-8b-instruct',{messages:[{role:'system',content:`Generate secure, maintainable ${language} code. Output only code.`},{role:'user',content:prompt}]});
-      const code=typeof output?.response==='string'?output.response:'';
+      const model=env.AI_MODEL||'@cf/meta/llama-3.3-70b-instruct-fp8-fast';
+      let output;
+      try{output=await env.AI.run(model,{messages:[{role:'system',content:`Generate secure, maintainable ${language} code. Output only code.`},{role:'user',content:prompt}]});}
+      catch{output=await env.AI.run('@cf/meta/llama-3.1-8b-instruct-fp8-fast',{messages:[{role:'system',content:`Generate secure, maintainable ${language} code. Output only code.`},{role:'user',content:prompt}]});}
+      const code=typeof output?.response==='string'?output.response:(output?.text||'');
       if(!code)throw Object.assign(new Error('AI returned an empty result'),{status:502});
       const result=await idempotent(env,call.idempotencyKey,async()=>{const inserted=await env.DB.prepare("INSERT INTO code_snippets(title,language,code,tags,created_at) VALUES(?,?,?,'ai-generated',datetime('now')) RETURNING id").bind(prompt.slice(0,100),language,code).first();return {id:inserted?.id,code};});
       return json({ok:true,result,traceId,from:ROLE});

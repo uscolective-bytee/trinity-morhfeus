@@ -4,7 +4,9 @@ const APPS=Object.freeze({
   notepad:{command:'notepad.exe',processes:['Notepad']},
   calculator:{command:'calc.exe',processes:['CalculatorApp','ApplicationFrameHost'],titles:['Calculator','Kalkulačka','Kalkula']},
   paint:{command:'mspaint.exe',processes:['mspaint']},
-  explorer:{command:'explorer.exe',processes:['explorer']}
+  explorer:{command:'explorer.exe',processes:['explorer']},
+  chrome:{command:'chrome.exe',processes:['chrome']},
+  edge:{command:'msedge.exe',processes:['msedge']}
 });
 const OPERATIONS=new Set(['list','launch','focus','type']);
 

@@ -4,7 +4,7 @@ import {AGENTS,SKILLS,selectTeam,shouldDelegate} from '../src/registry.js';
 import {validKey,checkOrigin,readJSON} from '../src/security.js';
 import {jobSchema} from '../src/jobs.js';
 import {parseAction,runAgent,executionPolicyForProvider} from '../src/engine.js';
-import {runTool} from '../src/tools.js';
+import {runTool,waitForSystemAction} from '../src/tools.js';
 import {extractModelText,extractGeminiInteractionText,getOllamaKey,serviceStatus,runScheduledHealth,readiness} from '../src/services.js';
 import {TRUTH_POLICY,findUnsupportedActionClaims,truthStatus} from '../src/truth.js';
 import {COMMUNICATION_STYLE,normalizeLanguage,languageDirective,tokenBudget} from '../src/cognition.js';
@@ -19,9 +19,9 @@ import {handleInboundEmail} from '../src/email.js';
 import {PLUGINS} from '../src/plugins.js';
 import {PRACTICAL_TOOL_NAMES,PRACTICAL_TOOL_SCHEMAS,runPracticalTool} from '../src/practical-skills.js';
 import {studioGenerationPlan} from '../src/studio.js';
-test('40 unique agents in eight departments',()=>{assert.equal(AGENTS.length,40);assert.equal(new Set(AGENTS.map(a=>a.id)).size,40);assert.equal(new Set(AGENTS.map(a=>a.cluster)).size,8);});
-test('20 practical skills are installed as real tools for every Trinity role',()=>{assert.equal(PRACTICAL_TOOL_NAMES.length,20);assert.equal(new Set(PRACTICAL_TOOL_NAMES).size,20);assert.ok(PRACTICAL_TOOL_NAMES.every(name=>PLUGINS.some(plugin=>plugin.tools.includes(name))));assert.ok(AGENTS.every(agent=>PRACTICAL_TOOL_NAMES.every(name=>agent.tools.includes(name))));});
-test('all 20 practical skill implementations execute real bounded work',()=>{
+test('45 unique agents in nine departments',()=>{assert.equal(AGENTS.length,45);assert.equal(new Set(AGENTS.map(a=>a.id)).size,45);assert.equal(new Set(AGENTS.map(a=>a.cluster)).size,9);});
+test('25 practical skills are installed as real tools for every Trinity role',()=>{assert.equal(PRACTICAL_TOOL_NAMES.length,25);assert.equal(new Set(PRACTICAL_TOOL_NAMES).size,25);assert.ok(PRACTICAL_TOOL_NAMES.every(name=>PLUGINS.some(plugin=>plugin.tools.includes(name))));assert.ok(AGENTS.every(agent=>PRACTICAL_TOOL_NAMES.every(name=>agent.tools.includes(name))));});
+test('all 25 practical skill implementations execute real bounded work',()=>{
   const cases=[
     ['date_math',{operation:'add_days',start:'2026-01-01',days:2},result=>assert.equal(result.date,'2026-01-03')],
     ['timezone_convert',{datetime:'2026-01-01T12:00:00Z',to_timezone:'Europe/Bratislava'},result=>assert.equal(result.utc,'2026-01-01T12:00:00.000Z')],
@@ -42,13 +42,20 @@ test('all 20 practical skill implementations execute real bounded work',()=>{
     ['markdown_inspect',{markdown:'# Nadpis\n- [x] Hotovo\n[Web](https://example.com)'},result=>assert.deepEqual([result.headings.length,result.completed_tasks,result.links.length],[1,1,1])],
     ['html_to_text',{html:'<style>x{}</style><p>Ahoj <b>Trinity</b></p>'},result=>assert.equal(result.text,'Ahoj Trinity')],
     ['business_math',{operation:'vat',amount:100,rate:20},result=>assert.equal(result.gross,120)],
+    ['prospect_queries',{service:'tvorba webu',industries:['kaderníctvo'],locations:['Bratislava']},result=>assert.equal(result.contacted,false)],
+    ['prospect_score',{prospects:[{name:'Firma A',signals:['no_website'],evidence:['verejný profil firmy']}]},result=>assert.equal(result.prospects[0].score,34)],
+    ['outreach_draft',{prospect_name:'Firma A',service:'nový web',observations:['chýba mobilná verzia'],benefit:'Zákazníci nájdu ponuku rýchlejšie.'},result=>assert.deepEqual([result.status,result.sent,result.send_required],['draft',false,true])],
+    ['revenue_model',{setup_price:500,monthly_price:50,delivery_cost:100,monthly_cost:100,leads_per_month:20,close_rate_pct:10,months:2},result=>assert.equal(result.total_customers,4)],
+    ['improvement_plan',{goal:'Zlepšiť obchodný postup',evidence:['Test ukázal chýbajúci krok'],tests:['npm test'],production_change:true},result=>assert.equal(result.production_approval_required,true)],
     ['geometry',{shape:'circle',radius:2},result=>assert.equal(result.area,Math.PI*4)]
   ];
-  assert.equal(cases.length,20);
+  assert.equal(cases.length,25);
   for(const [name,input,verify] of cases)verify(runPracticalTool(name,PRACTICAL_TOOL_SCHEMAS[name].parse(input)));
 });
 test('AI Studio settings create real provider fallback and quality plans',()=>{assert.deepEqual(studioGenerationPlan('gemini','fast',{}),{maxTokens:3600,directive:'Uprednostni čistú menšiu stránku a rýchle vytvorenie.',providers:['gemini','workers-ai']});const high=studioGenerationPlan('auto','high',{OLLAMA_SECRET:{}});assert.equal(high.maxTokens,8000);assert.deepEqual(high.providers,['ollama','workers-ai']);});
 test('routing and team deduplication',()=>{assert.deepEqual(selectTeam('Cloudflare binding','team'),['planner','cloudflare','qa','orchestrator']);assert.equal(selectTeam('test','team','orchestrator').length,3);});
+test('customer acquisition routes to owner business development',()=>{assert.deepEqual(selectTeam('Nájdi zákazníkov na LinkedIn pre tvorbu webstránok','single','auto'),['business-development']);});
+test('business and self-improvement tools are enforced as owner-only on the server',async()=>{const agent=AGENTS.find(item=>item.id==='business-development'),input={service:'tvorba webu',industries:['reštaurácia'],locations:['Bratislava']};await assert.rejects(runTool({},agent,'prospect_queries',input),/iba overenému ownerovi/);const env={DB:{prepare:()=>({bind(){return this;},first:async()=>({installed:1,enabled:1})})}};const result=await runTool(env,agent,'prospect_queries',input,{adminAuthorized:true});assert.equal(result.contacted,false);});
 test('work requests delegate while ordinary conversation stays direct',()=>{assert.equal(shouldDelegate('Ahoj Trinity'),false);assert.equal(shouldDelegate('Oprav a otestuj Cloudflare Worker'),true);assert.ok(AGENTS.find(a=>a.id==='orchestrator').tools.includes('web_search'));});
 test('fail closed and exact secret comparison',async()=>{assert.equal(await validKey('x',{}),false);assert.equal(await validKey('a'.repeat(32),{TRINITY_OPS_KEY:'b'.repeat(32)}),false);assert.equal(await validKey('a'.repeat(32),{TRINITY_OPS_KEY:'a'.repeat(32)}),true);});
 test('cross-origin blocked',()=>assert.throws(()=>checkOrigin(new Request('https://trinity.test/api',{headers:{Origin:'https://evil.test'}})),{status:403}));
@@ -62,6 +69,8 @@ test('chat accepts world language tags and automatic language detection',()=>{as
 test('Trinity uses natural communication and treats authenticated request as scoped authorization',()=>{assert.match(COMMUNICATION_STYLE,/normálna osobná asistentka/);assert.match(COMMUNICATION_STYLE,/nežiadaj druhú textovú formulku SCHVÁĽ/);assert.match(COMMUNICATION_STYLE,/presne zadaný rozsah/);});
 test('complex scientific work receives a larger reasoning budget',()=>{assert.ok(tokenBudget('orchestrator','Analyzuj kvantovú fyziku')>tokenBudget('writer','Ahoj'));});
 test('next-gen planner classifies intent and risk without model claims',()=>{const research=planTask('Vyhľadaj aktuálne zdroje o kvantovej fyzike');assert.equal(research.intent,'research');assert.equal(research.risk,'low');const build=planTask('Vytvor a nasad webovú aplikáciu');assert.equal(build.intent,'build');assert.equal(build.risk,'high');assert.equal(build.requires_approval,true);assert.ok(build.steps.length>=3);});
+test('repair planner diagnoses, repairs, skips optional failures and verifies',()=>{const repair=planTask('Nájdi problém, oprav Trinity a otestuj ju');assert.equal(repair.intent,'repair');assert.equal(repair.repair,true);assert.match(repair.steps.join(' '),/zdroj problému/);assert.match(repair.steps.join(' '),/preskočiť nepovinný krok/);assert.match(repair.steps.join(' '),/test/);});
+test('admin system action waits for a completed receipt instead of claiming success early',async()=>{let call=0;const rows=[{id:'00000000-0000-4000-8000-000000000001',action:'edit',status:'claimed',payload_json:'{}',receipt_json:null},{id:'00000000-0000-4000-8000-000000000001',action:'edit',status:'completed',payload_json:'{}',receipt_json:'{"path":"Trinity/src/index.js","after_sha256":"abc"}'}];const env={DB:{prepare:()=>({bind(){return this;},first:async()=>rows[Math.min(call++,rows.length-1)]})}};const result=await waitForSystemAction(env,{id:rows[0].id,status:'approved'},{attempts:2,intervalMs:0});assert.equal(result.status,'completed');assert.equal(result.receipt.after_sha256,'abc');});
 test('device keys cannot masquerade as Ollama API keys',async()=>assert.rejects(getOllamaKey({OLLAMA_API_KEY:'ssh-ed25519 public'})));
 test('tool allowlist rejects arbitrary execution',async()=>assert.rejects(runTool({},AGENTS[0],'shell',{command:'whoami'})));
 test('PC operator tools require server-verified admin context',async()=>assert.rejects(runTool({},AGENTS.find(a=>a.id==='orchestrator'),'pc_system_info',{}),/admin režime/));
@@ -76,7 +85,12 @@ test('model failure propagates',async()=>assert.rejects(runAgent({AI:{run:async(
 test('tool requests parse safely',()=>{assert.equal(parseAction('plain text').answer,'plain text');assert.equal(parseAction('```json\n{"tool":"search_memory","arguments":{}}\n```').tool,'search_memory');});
 test('health check does not claim inference success',async()=>{const rows=await serviceStatus({CORE:{fetch:async()=>Response.json({ok:true})}},'CORE');assert.equal(rows[0].status,'reachable');assert.match(rows[0].note,/nepotvrdzuje/);});
 test('service health uses each worker role contract',async()=>{let method,body;const rows=await serviceStatus({AURA_ANALYZER:{fetch:async(_url,init)=>{method=init.method;body=JSON.parse(init.body);return Response.json({ok:true,result:{status:'active'}});}}},'AURA_ANALYZER');assert.equal(method,'POST');assert.equal(body.action,'aura.status');assert.equal(rows[0].probe,'aura.status');assert.equal(rows[0].status,'reachable');});
-test('readiness verifies the historical message_count schema',async()=>{const database=columns=>({prepare:sql=>({all:async()=>sql.startsWith('SELECT name')?{results:[{name:'conversations'}]}:{results:columns.map(name=>({name}))}})});const env={DB:database(['id','message_count']),Mastermind:{},ARTIFACTS:{},OPS_WORKFLOW:{}};assert.equal((await readiness(env)).ready,true);const broken={...env,DB:database(['id'])};assert.deepEqual((await readiness(broken)).missing,['DB.schema']);});
+test('readiness requires both conversation schema and login-ticket identity migration',async()=>{
+ const database=(columns,ticketColumns=['email'])=>({prepare:sql=>({all:async()=>sql.startsWith('SELECT name')?{results:[{name:'conversations'}]}:{results:(sql.includes('ops_login_tickets')?ticketColumns:columns).map(name=>({name}))}})});
+ const env={DB:database(['id','message_count']),Mastermind:{},ARTIFACTS:{},OPS_WORKFLOW:{}};
+ assert.equal((await readiness(env)).ready,true);
+ for(const DB of [database(['id']),database(['id','message_count'],[])])assert.deepEqual((await readiness({...env,DB})).missing,['DB.schema']);
+});
 test('scheduled health stores a truthful structured receipt',async()=>{let stored='';const env={CORE:{fetch:async()=>Response.json({ok:true})},DB:{prepare:()=>({bind(value){stored=value;return this;},run:async()=>({success:true})})}};const summary=await runScheduledHealth(env,'*/30 * * * *');assert.equal(summary.reachable,1);assert.equal(summary.healthy,false);assert.ok(summary.failed.includes('BUILDER'));assert.ok(summary.not_configured.includes('BUILDER'));assert.match(stored,/scheduled|reachable|not_configured|checked_at/);});
 test('truth policy rejects consciousness claims and requires evidence',()=>{assert.match(TRUTH_POLICY,/Nemáš preukázané vedomie/);assert.match(TRUTH_POLICY,/potvrdená dôveryhodným systémovým záznamom/);});
 test('unsupported external action claims are detected',()=>{assert.deepEqual(findUnsupportedActionClaims('Nasadila som nový Worker.',[]),['deploy']);assert.deepEqual(findUnsupportedActionClaims('I uploaded the file.',[]),['publish']);assert.equal(truthStatus('Pripravila som návrh.',[]).status,'passed');});

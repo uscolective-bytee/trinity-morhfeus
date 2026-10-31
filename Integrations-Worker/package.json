@@ -1,0 +1,16 @@
+{
+  "name": "trinity-integrations",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "wrangler deploy --dry-run --outdir dist",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "4.151.1"
+  },
+  "overrides": {
+    "undici": "7.30.1"
+  }
+}

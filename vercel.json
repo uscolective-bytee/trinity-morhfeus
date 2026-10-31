@@ -1,0 +1,41 @@
+{
+  "version": 2,
+  "name": "trinity-sovereign-os",
+  "public": true,
+  "outputDirectory": "Trinity/public",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "https://auru.space/api/$1"
+    },
+    {
+      "src": "/mcp/(.*)",
+      "dest": "https://auru.space/mcp/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "no-referrer"
+        }
+      ]
+    }
+  ]
+}

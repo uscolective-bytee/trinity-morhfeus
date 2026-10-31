@@ -1,6 +1,7 @@
 import {McpServer} from '@modelcontextprotocol/server';
 import {serveStdio} from '@modelcontextprotocol/server/stdio';
 import {z} from 'zod';
+import {TRINITY_VERSION} from '../src/version.js';
 
 const token=process.env.TRINITY_MCP_TOKEN;
 if(!token)throw new Error('TRINITY_MCP_TOKEN is missing.');
@@ -24,8 +25,9 @@ async function remoteTool(name,args={}){
 
 const forward=name=>async args=>remoteTool(name,args);
 serveStdio(()=>{
-  const server=new McpServer({name:'trinity-secure-bridge',version:'9.4.2'},{instructions:'Read status first. Mutating project or PC actions are proposals until Trinity returns a completed receipt. Never expose credentials or claim that a queued/proposed action already ran.'});
+  const server=new McpServer({name:'trinity-secure-bridge',version:TRINITY_VERSION},{instructions:'Read status first. Mutating project or PC actions are proposals until Trinity returns a completed receipt. Never expose credentials or claim that a queued/proposed action already ran.'});
   server.registerTool('trinity_status',{description:'Read verified Trinity readiness and plugin status.',inputSchema:{}},forward('trinity_status'));
+  server.registerTool('get_capability_status',{description:'Read current capability configuration, connectivity and execution evidence without secrets.',inputSchema:{}},forward('get_capability_status'));
   server.registerTool('list_agents',{description:'List Trinity specialist roles.',inputSchema:{}},forward('list_agents'));
   server.registerTool('dispatch_task',{description:'Queue bounded work in Trinity; follow with get_task.',inputSchema:{task:z.string().min(1).max(12000),agent:z.string().optional(),mode:z.enum(['single','team']).optional(),provider:z.enum(['workers-ai','openai','gemini','ollama','local']).optional(),language:z.enum(['sk','en']).optional(),idempotency_key:z.string().uuid().optional()}},forward('dispatch_task'));
   server.registerTool('get_task',{description:'Read task state and verified receipts.',inputSchema:{id:z.string().uuid()}},forward('get_task'));

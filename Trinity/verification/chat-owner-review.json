@@ -1,0 +1,25 @@
+{
+  "checked_at": "2026-10-25T19:06:09.4879376Z",
+  "base_commit": "a0925580c99dc80cb01a7b0362983d719df8baf1",
+  "scope": "working-tree-independent-review",
+  "full_suite": {
+    "failed": 0,
+    "passed": 428,
+    "duration_ms": 108990
+  },
+  "parser_unit_tests": {
+    "failed": 0,
+    "passed": 9
+  },
+  "engine_contract": {
+    "failed": 1,
+    "integrated": false,
+    "passed": 7
+  },
+  "live_tool_receipt_verified": false,
+  "live_conversation_verified": true,
+  "browser_verified": false,
+  "deployed_by_codex": false,
+  "pending": "Antigravity ACK, engine/provider integration, live tool execution receipt",
+  "handoff": "CODEX-CHAT-ACCEPTANCE-2026-10-25.md"
+}

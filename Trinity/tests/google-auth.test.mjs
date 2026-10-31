@@ -1,7 +1,14 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {googleAuthRequired,googleOAuthConfigured,isGoogleAdminEmail,verifyGoogleIdToken} from '../src/google-auth.js';
-import {authenticate,hash} from '../src/security.js';
+
+test('Google enabled flag cannot replace OAuth secret or a secure callback',()=>{
+ const config={GOOGLE_ENABLED:'true',GOOGLE_CLIENT_ID:'client',TRINITY_ADMIN_EMAILS:'owner@example.test',GOOGLE_REDIRECT_URI:'https://auru.space/auth/google/callback'};
+ assert.equal(googleOAuthConfigured(config),false);
+ assert.equal(googleOAuthConfigured({...config,GOOGLE_CLIENT_SECRET:'secret'}),true);
+ assert.equal(googleOAuthConfigured({...config,GOOGLE_CLIENT_SECRET:'secret',GOOGLE_REDIRECT_URI:'http://other.test/callback'}),false);
+});
+import {authenticate,hash,isOwnerEmail} from '../src/security.js';
 
 const encode=value=>btoa(String.fromCharCode(...new TextEncoder().encode(JSON.stringify(value)))).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
 let signingKeys;
@@ -32,6 +39,14 @@ test('admin email allowlist is normalized and exact',()=>{
   assert.equal(isGoogleAdminEmail(env,'not-saboivan2008@gmail.com'),false);
 });
 
+test('owner email allowlist recognizes every verified owner identity',()=>{
+  const env={TRINITY_OWNER_EMAIL:'saboivan2008@gmail.com',TRINITY_OWNER_EMAILS:' uscolective@gmail.com, usc31@auru.space '};
+  assert.equal(isOwnerEmail(env,'SABOIVAN2008@GMAIL.COM'),true);
+  assert.equal(isOwnerEmail(env,'uscolective@gmail.com'),true);
+  assert.equal(isOwnerEmail(env,'usc31@auru.space'),true);
+  assert.equal(isOwnerEmail(env,'admin@example.com'),false);
+});
+
 test('Google ID token requires valid RSA signature, audience, nonce, issuer and verified email',async()=>{
   const keys=await setupKeys(),getKeys=async()=>[keys.jwk],token=await signClaims(validClaims());
   const identity=await verifyGoogleIdToken(token,{clientId:'trinity-test-client',nonce:'single-use-nonce'},getKeys);
@@ -45,9 +60,9 @@ test('Google ID token requires valid RSA signature, audience, nonce, issuer and 
 
 test('Google-only sessions require an active profile and carry its server-side role',async()=>{
   const session='a'.repeat(64),digest=await hash(session);
-  const envFor=(status,role)=>({TRINITY_AUTH_MODE:'google',TRINITY_OPS_KEY:'legacy-key-must-not-authenticate',DB:{prepare:sql=>({bind:value=>({first:async()=>sql.includes('ops_sessions s')&&value===digest?{expires_at:Date.now()+60_000,email:'saboivan2008@gmail.com',role,status}:null})})}});
+  const envFor=(status,role)=>({TRINITY_AUTH_MODE:'google',TRINITY_OPS_KEY:'legacy-key-must-not-authenticate',TRINITY_OWNER_EMAILS:'saboivan2008@gmail.com',DB:{prepare:sql=>({bind:value=>({first:async()=>sql.includes('ops_sessions s')&&value===digest?{expires_at:Date.now()+60_000,email:'saboivan2008@gmail.com',role,status}:null})})}});
   const request=new Request('https://trinity.test/api/private',{headers:{Cookie:`trinity_session=${session}`}});
-  assert.deepEqual(await authenticate(request,envFor('active','admin')),{id:digest.slice(0,24),email:'saboivan2008@gmail.com',role:'admin'});
+  assert.deepEqual(await authenticate(request,envFor('active','admin')),{id:digest.slice(0,24),email:'saboivan2008@gmail.com',role:'owner'});
   await assert.rejects(authenticate(request,envFor('pending','user')),{status:401});
   await assert.rejects(authenticate(new Request('https://trinity.test/api/private',{headers:{Authorization:'Bearer legacy-key-must-not-authenticate'}}),envFor('active','admin')),{status:401});
 });

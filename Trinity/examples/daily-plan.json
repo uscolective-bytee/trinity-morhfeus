@@ -1,0 +1,10 @@
+{
+  "date": "2026-10-22",
+  "tasks": [
+    {"title": "Dokončiť rozpočet", "minutes": 60, "priority": "high"},
+    {"title": "Nakúpiť potraviny", "minutes": 30, "priority": "normal"},
+    {"title": "Upratať dokumenty", "minutes": 30, "priority": "low"}
+  ],
+  "available_minutes": 90,
+  "provider": "workers-ai"
+}

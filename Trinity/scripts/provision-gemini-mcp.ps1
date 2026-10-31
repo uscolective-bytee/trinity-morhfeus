@@ -27,8 +27,7 @@ $sql = "INSERT INTO ops_api_access_keys(id,owner_id,name,key_hash,key_prefix,sco
 
 Push-Location $root
 try {
-  $wranglerOutput = & npx.cmd wrangler d1 execute trinity-v03 --remote --command $sql 2>&1
-  if ($LASTEXITCODE -ne 0) { throw "Cloudflare D1 refused the credential (exit $LASTEXITCODE): $wranglerOutput" }
+  $previousPreference = $ErrorActionPreference; $ErrorActionPreference = 'Continue'; $wranglerOutput = & npx.cmd wrangler d1 execute trinity-v03 --remote --env="" --command $sql 2>&1; $wranglerExitCode = $LASTEXITCODE; $ErrorActionPreference = $previousPreference; if ($wranglerExitCode -ne 0) { throw "Cloudflare D1 refused the credential (exit $wranglerExitCode): $wranglerOutput" }
   New-Item -ItemType Directory -Path $credentialDir -Force | Out-Null
   $protected = ConvertFrom-SecureString (ConvertTo-SecureString $secret -AsPlainText -Force)
   Set-Content -LiteralPath $credentialPath -Value $protected -NoNewline

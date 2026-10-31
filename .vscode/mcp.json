@@ -1,0 +1,26 @@
+{
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "trinity-mcp-token",
+      "description": "Trinity MCP Bearer token (trn_live_...)",
+      "password": true
+    }
+  ],
+  "servers": {
+    "trinity": {
+      "type": "http",
+      "url": "https://auru.space/mcp",
+      "headers": {
+        "Authorization": "Bearer ${input:trinity-mcp-token}"
+      }
+    },
+    "trinity-development": {
+      "type": "http",
+      "url": "https://auru.dev/mcp",
+      "headers": {
+        "Authorization": "Bearer ${input:trinity-mcp-token}"
+      }
+    }
+  }
+}

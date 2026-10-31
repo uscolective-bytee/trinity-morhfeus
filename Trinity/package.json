@@ -1,35 +1,51 @@
 {
   "name": "trinity-operational-center",
-  "version": "9.4.3",
+  "version": "11.0.0",
+  "license": "MIT",
+  "author": "Ivan Sabo (Basterix31) <saboivan2008@gmail.com>",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "wrangler dev --ip 127.0.0.1",
-    "build": "wrangler deploy --dry-run --outdir dist",
-    "deploy": "wrangler deploy",
+    "build": "node scripts/build-mcp-app.mjs && wrangler deploy --dry-run --env=\"\" --outdir dist",
+    "deploy": "node scripts/build-mcp-app.mjs && wrangler deploy --env=\"\"",
     "types": "wrangler types",
     "test": "npm run build && node --test tests/*.test.mjs",
-    "test:truth-live": "node scripts/live-truth-test.mjs"
+    "test:truth-live": "node scripts/live-truth-test.mjs",
+    "build:staging": "node scripts/build-mcp-app.mjs && wrangler deploy --dry-run --env staging --outdir dist-staging",
+    "deploy:staging": "node scripts/build-mcp-app.mjs && wrangler deploy --env staging",
+    "migrate:staging": "wrangler d1 migrations apply DB --remote --env staging",
+    "build:development": "npm run build:staging",
+    "deploy:development": "npm run deploy:staging",
+    "migrate:development": "npm run migrate:staging"
   },
   "dependencies": {
-    "@modelcontextprotocol/server": "2.0.0",
-    "agents": "0.24.0",
-    "zod": "4.6.5"
+    "@cloudflare/puppeteer": "^1.4.0",
+    "@modelcontextprotocol/ext-apps": "2.0.3",
+    "@modelcontextprotocol/server": "2.3.1",
+    "@noble/curves": "2.4.0",
+    "@noble/hashes": "2.4.0",
+    "agents": "0.28.1",
+    "qrcode-generator": "2.0.4",
+    "zod": "4.6.7"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "5.20261011.1",
+    "@cloudflare/workers-types": "5.20261019.1",
+    "esbuild": "0.28.2",
     "miniflare": "5.20261006.1-alpha",
-    "wrangler": "4.149.0"
+    "wrangler": "4.154.0"
   },
   "overrides": {
     "@modelcontextprotocol/client": "2.3.1",
-    "@modelcontextprotocol/sdk": "1.32.1"
+    "@modelcontextprotocol/sdk": "1.32.1",
+    "undici": "7.30.1"
   },
   "allowScripts": {
     "core-js-pure@3.50.0": true,
     "esbuild@0.28.2": true,
     "esbuild@0.28.1": true,
     "workerd@1.20260930.2": true,
-    "workerd@1.20261006.1": true
+    "workerd@1.20261006.1": true,
+    "workerd@1.20261012.1": true
   }
 }

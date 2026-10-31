@@ -1,0 +1,71 @@
+﻿{
+    "scope":  "live-backend-via-authenticated-mcp",
+    "checked_at":  "2026-10-25T19:12:28.1063025Z",
+    "health_after":  {
+                         "service":  "Trinity",
+                         "version":  "11.0.0",
+                         "environment":  "production",
+                         "source":  {
+                                        "repository":  "uscolective-byte/Trinity-antigravity",
+                                        "branch":  "main"
+                                    },
+                         "deployment":  {
+                                            "id":  "29b84128-08db-4459-92db-aa5b6708b967",
+                                            "tag":  "ab73b54909be6c5ed240658bf139a0bfbc0ecaa7",
+                                            "timestamp":  "2026-10-25T19:11:13.89979Z"
+                                        },
+                         "agents":  45,
+                         "status":  "serving",
+                         "truth_mode":  "evidence-required"
+                     },
+    "health_before":  {
+                          "service":  "Trinity",
+                          "version":  "11.0.0",
+                          "environment":  "production",
+                          "source":  {
+                                         "repository":  "uscolective-byte/Trinity-antigravity",
+                                         "branch":  "main"
+                                     },
+                          "deployment":  {
+                                             "id":  "29b84128-08db-4459-92db-aa5b6708b967",
+                                             "tag":  "ab73b54909be6c5ed240658bf139a0bfbc0ecaa7",
+                                             "timestamp":  "2026-10-25T19:11:13.89979Z"
+                                         },
+                          "agents":  45,
+                          "status":  "serving",
+                          "truth_mode":  "evidence-required"
+                      },
+    "checks":  [
+                   {
+                       "passed":  true,
+                       "receipts":  [
+                                        {
+                                            "tool":  "calculate",
+                                            "status":  "completed",
+                                            "receipt_id":  "966195c0-6b67-42d5-8e4d-04c38f77f636",
+                                            "verified_at":  "2026-10-25T19:11:58.878Z"
+                                        }
+                                    ],
+                       "reply":  "Súčet 17 a 25 je 42.",
+                       "name":  "calculator",
+                       "status":  "completed",
+                       "elapsed_ms":  15405,
+                       "error":  null,
+                       "job_id":  "b6ef3836-1d5e-4e8a-ae9d-88136d639ffb"
+                   },
+                   {
+                       "passed":  true,
+                       "receipts":  [
+
+                                    ],
+                       "reply":  "Ahoj, ako môžem dnes pomôcť?",
+                       "name":  "conversation",
+                       "status":  "completed",
+                       "elapsed_ms":  24882,
+                       "error":  null,
+                       "job_id":  "2fd6abed-63b4-4820-88ec-92d2211fec36"
+                   }
+               ],
+    "origin":  "https://auru.space",
+    "browser_verified":  false
+}

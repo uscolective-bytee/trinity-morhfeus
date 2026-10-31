@@ -1,0 +1,29 @@
+﻿{
+    "checked_at_utc":  "2026-10-26T04:05:59.4648128Z",
+    "scope":  "existing-local-client-read-only",
+    "checks":  [
+                   {
+                       "origin":  "https://auru.space",
+                       "authenticated":  true,
+                       "tool_count":  33,
+                       "memory_sync_available":  false,
+                       "agent_router_available":  false,
+                       "error":  null
+                   },
+                   {
+                       "origin":  "https://auru.dev",
+                       "authenticated":  true,
+                       "tool_count":  33,
+                       "memory_sync_available":  false,
+                       "agent_router_available":  false,
+                       "error":  null
+                   }
+               ],
+    "host_connections":  {
+                             "antigravity":  "not-verified",
+                             "copilot_studio":  "not-verified",
+                             "gemini":  "not-verified",
+                             "chatgpt":  "not-verified"
+                         },
+    "provider_calls_executed":  false
+}

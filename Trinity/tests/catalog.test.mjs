@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import {SKILLS} from '../src/registry.js';
 import {PLUGINS} from '../src/plugins.js';
 
-test('Trinity exposes exactly 150 executable skills',()=>{
-  assert.equal(SKILLS.length,150);
-  assert.equal(new Set(SKILLS.map(item=>item.id)).size,150);
+test('Trinity exposes exactly 152 executable skills',()=>{
+  assert.equal(SKILLS.length,152);
+  assert.equal(new Set(SKILLS.map(item=>item.id)).size,152);
   for(const skill of SKILLS) {
     assert.ok(skill.id && skill.name && skill.description);
     assert.ok(Array.isArray(skill.clusters));

@@ -17,5 +17,8 @@
     "workerd@1.20260930.2": true,
     "workerd@1.20261006.1": true,
     "esbuild@0.28.2": true
+  },
+  "overrides": {
+    "undici": "7.30.1"
   }
 }
