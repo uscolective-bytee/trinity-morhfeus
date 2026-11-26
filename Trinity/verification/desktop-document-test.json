@@ -1,0 +1,13 @@
+{
+  "readback_file": "C:\\Users\\saboi\\OneDrive\\Desktop\\Trinity\\SLUB_TRINITY.md",
+  "target": "C:\\Users\\saboi\\OneDrive\\Desktop\\Trinity\\Trinity-cloud-test-4b4aaa7a.txt",
+  "checked_at": "2026-10-25T19:26:43.6032442Z",
+  "readback_verified": true,
+  "write_action": {
+    "id": "750a7708-2ad8-492a-8b5f-85b852cf05a0",
+    "action": "write",
+    "status": "proposed",
+    "approval_required": true,
+    "next_step": "Vlastník musí v Trinity chate odoslať SCHVÁĽ 750a7708-2ad8-492a-8b5f-85b852cf05a0."
+  }
+}

@@ -1,0 +1,197 @@
+/* TRINITY / GARAGE — original street-art workspace. */
+html:root{--canvas:#181714;--paper:#f3efe5;--ink:#111111;--muted:#635d51;--line:#d6d0c4;--purple:#dedf35;--blue:#b9c5b7;--teal:#dedf35;--cyan:#dedf35;--gold:#dedf35;--text-main:#f3efe5;--text-secondary:#dad5c9;--text-muted:#a6a094}
+body.garage-ui{background:#181714 url('/garage-v1.webp') center/cover fixed!important;color:#f3efe5!important;font-family:Arial,Helvetica,sans-serif!important;display:flex;margin:0}
+body.garage-ui::before,body.garage-ui::after{display:none!important}
+body.garage-ui [hidden]{display:none!important}
+body.garage-ui .sidebar{background:rgba(22,21,19,.96)!important;box-shadow:none!important;backdrop-filter:none!important;border:1px solid #6c6558!important;width:244px!important;margin:16px 0 16px 16px!important;height:calc(100dvh - 32px)!important;border-radius:4px!important;padding:26px 16px!important;flex-shrink:0!important}
+body.garage-ui .brand{background:transparent!important;border:0!important;box-shadow:none!important;padding:0 10px 24px!important;gap:12px}
+body.garage-ui .brand-mark{background:#e4e436!important;color:#191916!important;border-radius:0!important;transform:rotate(-8deg);font-weight:900;font-size:28px;box-shadow:4px 4px 0 #655b46!important}
+body.garage-ui .brand>span:last-child{font-weight:900;font-size:24px;letter-spacing:-1px;text-transform:uppercase}
+body.garage-ui .brand small{font:9px/1.5 "Courier New",monospace!important;letter-spacing:1.3px;text-transform:uppercase;color:#b6afa0!important;margin-top:5px}
+body.garage-ui .main-nav button{background:transparent!important;color:#d5d0c4!important;border:1px solid transparent!important;box-shadow:none!important;border-radius:2px!important;margin:3px 0;padding:12px 14px!important;gap:12px}
+body.garage-ui .main-nav button>span{font-size:0!important;width:15px!important;color:#a6a094}
+body.garage-ui .main-nav button>span::after{content:'↗';font:17px "Courier New",monospace;color:#a6a094}
+body.garage-ui .main-nav button b{font-size:13px;font-weight:600}
+body.garage-ui .main-nav button.active{background:#e4e436!important;color:#191916!important;border-color:#e4e436!important;transform:rotate(-1deg)!important}
+body.garage-ui .main-nav button.active>span::after{color:#191916}
+body.garage-ui .main-nav button:hover{border-color:#807864!important;transform:none!important}
+body.garage-ui .new{background:#f3efe5!important;color:#24231f!important;border:0!important;border-radius:1px!important;box-shadow:3px 3px 0 #665f50!important;padding:12px!important;margin:24px 2px!important;font-size:12px!important}
+body.garage-ui .side-label{font:10px "Courier New",monospace!important;letter-spacing:1.6px;color:#aaa393!important}
+body.garage-ui #sessions button{background:transparent!important;border:0!important;color:#bcb5a7!important;font-size:12px!important;border-radius:0!important;box-shadow:none!important}
+body.garage-ui .sidebar-status-clean{background:transparent!important;border:0!important;box-shadow:none!important;padding:10px!important}
+body.garage-ui .sidebar-status-clean b{color:#e4e436!important;font:10px "Courier New",monospace!important}
+body.garage-ui .sidebar-status-clean small{color:#a9a18f!important;font-size:10px!important}
+body.garage-ui .sidebar-bottom{display:none!important}
+body.garage-ui main{background:transparent!important;margin-left:260px!important;width:calc(100% - 260px)!important;padding:16px 24px 16px!important;min-width:0;height:100dvh;display:flex;flex-direction:column;box-sizing:border-box!important;overflow:hidden!important}
+body.garage-ui header{background:rgba(22,21,19,.94)!important;border:1px solid #6c6558!important;border-radius:3px!important;box-shadow:none!important;backdrop-filter:none!important;padding:15px 22px!important;gap:12px;flex-shrink:0!important}
+body.garage-ui #page-title{font-size:18px!important;font-weight:800;letter-spacing:-.4px;color:#f3efe5!important}
+body.garage-ui #page-kicker{font:9px "Courier New",monospace!important;color:#e4e436!important;letter-spacing:2px}
+body.garage-ui #subtitle,body.garage-ui .domain-bridge-switch,body.garage-ui .fast-model-pill,body.garage-ui #environment-badge{display:none!important}
+body.garage-ui .header-actions{gap:8px}
+body.garage-ui .header-actions button,body.garage-ui #language{background:transparent!important;color:#c9c1b1!important;border:1px solid #5a5347!important;border-radius:2px!important;box-shadow:none!important;font:10px "Courier New",monospace!important;padding:7px 10px!important}
+body.garage-ui #account-state{background:transparent!important;border:0!important;box-shadow:none!important}
+body.garage-ui #account-label{font-size:11px!important;color:#f3efe5!important}
+body.garage-ui #account-detail{font-size:9px!important;color:#b9b09e!important}
+body.garage-ui #pc-bridge-badge{background:transparent!important;border:0!important;box-shadow:none!important;color:#c9c1b1!important;font-size:10px!important}
+
+/* App Views & Clean Layout Without Double Scrollbars */
+body.garage-ui #app-views{flex:1 1 auto!important;min-height:0!important;display:flex!important;flex-direction:column!important;overflow:hidden!important}
+body.garage-ui .view:not(.chat-view){flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important}
+body.garage-ui .chat-view{flex:1 1 auto!important;height:100%!important;min-height:0!important;display:flex!important;flex-direction:column!important;max-width:1000px!important;width:100%!important;margin:0 auto!important;padding:0 16px!important;background:transparent!important;overflow:hidden!important}
+body.garage-ui #chat-area{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;background:transparent!important;padding:24px 16px 16px!important;scroll-behavior:smooth!important}
+body.garage-ui #messages{max-width:920px!important;width:100%!important;margin:0 auto!important;padding-bottom:16px!important}
+
+/* Welcome Box */
+body.garage-ui #welcome{background:#f3efe5!important;border:0!important;border-radius:2px!important;box-shadow:8px 9px 0 #0005!important;max-width:680px!important;margin:45px auto 32px!important;padding:36px 36px 32px!important;text-align:left!important;transform:rotate(-.6deg);clip-path:polygon(0 .8%,99.5% 0,100% 98.7%,.5% 100%)}
+body.garage-ui #welcome .avatar{display:none!important}
+body.garage-ui #welcome .eyebrow{display:inline-block!important;background:#e4e436!important;color:#24231f!important;font:10px "Courier New",monospace!important;letter-spacing:2px!important;padding:5px 9px!important;transform:rotate(-2deg)}
+body.garage-ui #welcome h1{background:none!important;-webkit-text-fill-color:#24231f!important;color:#24231f!important;text-shadow:none!important;font:900 clamp(32px,4vw,58px)/1.02 Impact,"Arial Black",sans-serif!important;font-style:italic!important;letter-spacing:-2px!important;text-transform:uppercase;margin:22px 0 18px!important}
+body.garage-ui #welcome p{color:#625e55!important;font:14px/1.8 Arial,sans-serif!important;max-width:530px!important;margin:0!important}
+body.garage-ui .suggestions{justify-content:flex-start!important;margin-top:25px!important;gap:8px!important}
+body.garage-ui .suggestions button{border:1px solid #a29a89!important;background:transparent!important;color:#3b372f!important;border-radius:0!important;box-shadow:none!important;font-size:11px!important;padding:8px 11px!important}
+
+/* Non-overlapping relative composer */
+body.garage-ui .composer-wrap{position:relative!important;bottom:auto!important;left:auto!important;right:auto!important;width:100%!important;max-width:920px!important;margin:0 auto!important;z-index:2!important;flex-shrink:0!important;background:transparent!important;border:0!important;padding:8px 16px 16px!important}
+body.garage-ui #chat-form{background:#f3efe5!important;border:2px solid #1e1b16!important;border-radius:3px!important;box-shadow:6px 6px 0 rgba(0,0,0,0.4)!important;padding:14px 18px!important}
+body.garage-ui #message{background:transparent!important;color:#111111!important;-webkit-text-fill-color:#111111!important;box-shadow:none!important;border:0!important;font:15px/1.6 Arial,sans-serif!important;min-height:64px;resize:vertical;width:100%;box-sizing:border-box}
+body.garage-ui #message::placeholder{color:#736b5c!important}
+body.garage-ui .compose-settings{gap:7px!important}
+body.garage-ui #engine{max-width:180px;color:#554e40!important;background:transparent!important;border:0!important;box-shadow:none!important;font:10px "Courier New",monospace!important}
+body.garage-ui #attach-image,body.garage-ui #record-voice,body.garage-ui #read-answer,body.garage-ui .compose-settings label{font:10px "Courier New",monospace!important;color:#554e40!important;background:transparent!important;border:0!important;box-shadow:none!important;padding:6px!important}
+body.garage-ui .voice-live-btn,body.garage-ui #memory-graph-open-btn{font:10px "Courier New",monospace!important;border-radius:0!important}
+body.garage-ui #send,body.garage-ui button.primary{background:#e4e436!important;color:#1f2018!important;border:1px solid #a9a71f!important;border-radius:1px!important;box-shadow:2px 2px 0 #655b46!important;font-weight:800!important;text-shadow:none!important}
+body.garage-ui #send{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:6px!important;width:auto!important;min-width:94px!important;min-height:42px!important;padding:10px 17px!important;font-size:12px!important}
+body.garage-ui .footnote{color:#d6cebb!important;text-shadow:0 1px 3px #000;font:9px "Courier New",monospace!important;text-align:center!important;margin-top:14px!important}
+
+/* High-Contrast Crisp Chat Messages — Dark Ink on Light Cream & Lime Paper */
+body.garage-ui .message{border-radius:4px!important;box-shadow:4px 5px 0 rgba(0,0,0,0.45)!important;margin-bottom:20px!important;padding:20px 24px!important}
+body.garage-ui .message.assistant{background:#f3efe5!important;border:1px solid #d4cbb8!important;color:#111111!important}
+body.garage-ui .message.user{background:#e5e89a!important;border:1px solid #c2c668!important;color:#111111!important}
+body.garage-ui .message .name{font:700 11px "Courier New",monospace!important;letter-spacing:1.5px!important;text-transform:uppercase!important;margin-bottom:10px!important}
+body.garage-ui .message.assistant .name{color:#5c5443!important}
+body.garage-ui .message.user .name{color:#4b4e18!important}
+
+body.garage-ui .message .content,
+body.garage-ui .message.assistant .content,
+body.garage-ui .message.user .content{color:#111111!important;-webkit-text-fill-color:#111111!important;font:15px/1.75 Arial,Helvetica,sans-serif!important;letter-spacing:0.1px!important;word-break:break-word!important;white-space:pre-wrap}
+body.garage-ui .message .content :is(p,li,ul,ol,span,div,blockquote,em,i,td,th){color:#111111!important;-webkit-text-fill-color:#111111!important}
+body.garage-ui .message .content :is(strong,b,h1,h2,h3,h4,h5,h6,.md-h1,.md-h2,.md-h3){color:#000000!important;-webkit-text-fill-color:#000000!important;font-weight:800!important}
+body.garage-ui .message .content .md-h1{font-size:20px!important;margin:14px 0 8px!important}
+body.garage-ui .message .content .md-h2{font-size:17px!important;margin:12px 0 6px!important}
+body.garage-ui .message .content .md-h3{font-size:15px!important;margin:10px 0 4px!important}
+body.garage-ui .message .content .md-quote{border-left:3px solid #706b62!important;margin:10px 0!important;padding:4px 12px!important;background:rgba(0,0,0,0.04)!important;color:#333333!important;font-style:italic!important}
+body.garage-ui .message .content p{margin:0 0 12px!important;color:#111111!important}
+body.garage-ui .message .content p:last-child{margin-bottom:0!important}
+body.garage-ui .message .content ul.md-list,body.garage-ui .message .content ol.md-list{margin:8px 0 12px 24px!important;padding:0!important}
+body.garage-ui .message .content ul.md-list li,body.garage-ui .message .content ol.md-list li{margin-bottom:6px!important;color:#111111!important}
+
+body.garage-ui .message .content code.inline-code{background:#e2dccd!important;color:#12110e!important;-webkit-text-fill-color:#12110e!important;border:1px solid #b8af9a!important;padding:2px 6px!important;border-radius:2px!important;font:600 13px "Courier New",Consolas,monospace!important;white-space:nowrap}
+body.garage-ui .message .content pre.code-block{background:#191815!important;border:1px solid #4a453b!important;border-radius:3px!important;padding:12px 14px!important;margin:10px 0!important;overflow-x:auto!important;white-space:pre!important}
+body.garage-ui .message .content pre.code-block code{background:transparent!important;color:#f5f2eb!important;-webkit-text-fill-color:#f5f2eb!important;font:13px/1.6 "Courier New",Consolas,monospace!important;padding:0!important;border:0!important;white-space:pre!important}
+body.garage-ui .message .content a{color:#065f46!important;-webkit-text-fill-color:#065f46!important;text-decoration:underline!important;font-weight:700!important}
+body.garage-ui .message details{margin-top:12px!important;background:#e8e3d5!important;border:1px solid #c9c1ae!important;border-radius:2px!important;padding:8px 12px!important;color:#4a4436!important}
+body.garage-ui .message details summary{cursor:pointer!important;font:700 11px "Courier New",monospace!important;letter-spacing:1px!important;color:#4a4436!important}
+body.garage-ui .message details div{color:#4a4436!important;-webkit-text-fill-color:#4a4436!important}
+
+body.garage-ui .message .copy{display:inline-block!important;background:#24231f!important;color:#f3efe5!important;border:1px solid #24231f!important;border-radius:2px!important;font:700 11px "Courier New",monospace!important;padding:5px 12px!important;margin-top:12px!important;cursor:pointer!important}
+body.garage-ui .message .copy:hover{background:#e4e436!important;color:#191916!important;border-color:#e4e436!important}
+body.garage-ui #activity{background:rgba(24,23,20,.95)!important;color:#e4e436!important;padding:4px 10px!important;border-radius:2px!important;font:700 11px "Courier New",monospace!important;display:inline-block!important;margin-bottom:6px!important}
+
+/* Cards, Panels, Settings, and Dialogs */
+body.garage-ui .panel,body.garage-ui .hero-card,body.garage-ui .metric,body.garage-ui .project-card,body.garage-ui .studio-top,body.garage-ui .settings-card,body.garage-ui .domain-card,body.garage-ui .provider-card{background:#f3efe5!important;border:1px solid #aa9f8b!important;border-radius:2px!important;box-shadow:4px 4px 0 rgba(0,0,0,0.2)!important;backdrop-filter:none!important;color:#1d1c18!important}
+body.garage-ui .panel::before,body.garage-ui .hero-card::before,body.garage-ui .metric::before,body.garage-ui .living-core,body.garage-ui .admin-shield{display:none!important}
+body.garage-ui .panel :is(h1,h2,h3,h4,b,strong,dt,dd,label),body.garage-ui .hero-card :is(h1,h2,b,strong),body.garage-ui .metric strong,body.garage-ui .project-card :is(h2,b){color:#111111!important;-webkit-text-fill-color:#111111!important}
+body.garage-ui .panel :is(p,small,span),body.garage-ui .hero-card p,body.garage-ui .metric :is(span,small){color:#4a4436!important;-webkit-text-fill-color:#4a4436!important}
+body.garage-ui .panel h2,body.garage-ui .hero-card h1{font-family:Impact,"Arial Black",sans-serif!important;letter-spacing:.2px!important;text-transform:uppercase}
+
+body.garage-ui .setting-row,body.garage-ui .api-key-item,body.garage-ui .integration-item,body.garage-ui .tool-item,body.garage-ui .memory-item,body.garage-ui .domain-market-card{background:#fbf8f0!important;border:1px solid #c8beab!important;color:#111111!important;border-radius:2px!important;margin-bottom:8px!important}
+body.garage-ui .setting-row :is(b,strong,span),body.garage-ui .api-key-item :is(b,strong,span,p),body.garage-ui .integration-item :is(b,strong,span),body.garage-ui .tool-item :is(b,strong,span),body.garage-ui .memory-item :is(b,strong,span,p){color:#111111!important;-webkit-text-fill-color:#111111!important}
+body.garage-ui .setting-row small,body.garage-ui .api-key-item small,body.garage-ui .integration-item small,body.garage-ui .tool-item small{color:#554e42!important;-webkit-text-fill-color:#554e42!important}
+
+body.garage-ui .eyebrow{color:#dedf35!important;font:10px "Courier New",monospace!important;letter-spacing:1.7px!important}
+body.garage-ui input,body.garage-ui select,body.garage-ui textarea{background:#e9e4d7!important;border:1px solid #a69b86!important;color:#111111!important;border-radius:2px!important;box-shadow:none!important}
+body.garage-ui input:focus,body.garage-ui select:focus,body.garage-ui textarea:focus{border-color:#4a4b23!important;box-shadow:0 0 0 2px #a8a82e55!important}
+body.garage-ui button,body.garage-ui .detail-chip{border-radius:2px!important;box-shadow:none!important}
+body.garage-ui button:hover:not(:disabled){transform:none!important;filter:none!important}
+body.garage-ui button:focus-visible,body.garage-ui a:focus-visible{outline:2px solid #dbdf3c!important;outline-offset:3px!important}
+body.garage-ui #notice{background:#e4e436!important;color:#24231f!important;border:0!important;border-radius:2px!important;margin:14px 0 0!important;padding:10px 15px!important;box-shadow:none!important;font-size:12px!important}
+body.garage-ui #login{background:#f3efe5!important;color:#24231f!important;border:0!important;border-radius:2px!important;padding:38px!important;box-shadow:9px 9px 0 #0005!important;max-width:510px!important;margin:clamp(30px,8vh,90px) auto!important;transform:rotate(-.5deg)}
+body.garage-ui #login h2{font:900 38px Impact,"Arial Black",sans-serif!important;text-transform:uppercase;letter-spacing:-.5px;color:#24231f!important}
+body.garage-ui #login p{color:#716853!important;font-size:13px!important;line-height:1.8!important}
+body.garage-ui #login button{width:100%;margin-top:8px;padding:12px!important}
+body.garage-ui #passkey-login-btn{background:#24231f!important;color:#f3efe5!important;border:0!important;border-radius:2px!important}
+body.garage-ui #login-form{display:grid;gap:10px;margin-top:18px!important}
+body.garage-ui #key{width:100%;min-height:46px;padding:12px}
+body.garage-ui .studio-view,body.garage-ui .settings-view,body.garage-ui .domains-view,body.garage-ui .wallet-view,body.garage-ui .documents-view,body.garage-ui .dashboard-view{padding:28px 8px!important}
+body.garage-ui .view>div>h1,body.garage-ui .studio-top h1{font-family:Impact,"Arial Black",sans-serif!important;text-transform:uppercase;color:#f3efe5!important}
+body.garage-ui .studio-top h1{color:#24231f!important}
+body.garage-ui #studio-preview{background:#fff!important}
+
+@media(max-width:760px){
+  body.garage-ui .sidebar{margin:0!important;border-radius:0!important;border:0!important;border-bottom:1px solid #665f50!important;width:100%!important;height:auto!important;position:relative!important;padding:14px!important}
+  body.garage-ui .brand{padding:0 0 14px!important}
+  body.garage-ui .main-nav{display:flex!important;flex-direction:row!important;overflow-x:auto;gap:5px}
+  body.garage-ui .main-nav button{min-width:max-content;padding:8px 10px!important}
+  body.garage-ui .main-nav button>span{display:none!important}
+  body.garage-ui .new,body.garage-ui .side-label,body.garage-ui #sessions,body.garage-ui .sidebar-status-clean{display:none!important}
+  body.garage-ui{display:block!important}
+  body.garage-ui main{margin:0!important;width:100%!important;height:calc(100dvh - 132px)!important;padding:10px!important}
+  body.garage-ui header{padding:10px 13px!important}
+  body.garage-ui .header-actions{gap:3px}
+  body.garage-ui #pc-bridge-badge,body.garage-ui #account-detail,body.garage-ui #language{display:none!important}
+  body.garage-ui .chat-view{padding:0!important}
+  body.garage-ui #chat-area{padding:18px 4px!important}
+  body.garage-ui #welcome{margin:16px 4px!important;padding:26px!important}
+  body.garage-ui #welcome h1{font-size:38px!important}
+  body.garage-ui .composer-wrap{padding:8px 4px 12px!important}
+  body.garage-ui #chat-form{padding:10px!important}
+  body.garage-ui #engine{max-width:125px}
+  body.garage-ui #read-answer,body.garage-ui .compose-settings label{display:none!important}
+  body.garage-ui #login{margin:20px 4px!important;padding:26px!important}
+}
+@media(prefers-reduced-motion:reduce){body.garage-ui *,body.garage-ui *::before,body.garage-ui *::after{animation:none!important;transition:none!important}}
+
+html[data-theme="light"] body.garage-ui .sidebar,html[data-theme="light"] body.garage-ui header{background:rgba(243,239,229,.97)!important}
+html[data-theme="light"] body.garage-ui .brand>span:last-child,html[data-theme="light"] body.garage-ui #page-title,html[data-theme="light"] body.garage-ui .main-nav button{color:#24231f!important}
+html[data-theme="light"] body.garage-ui .brand small,html[data-theme="light"] body.garage-ui .header-actions button,html[data-theme="light"] body.garage-ui #language,html[data-theme="light"] body.garage-ui #account-label{color:#625e55!important}
+body.garage-ui [hidden],body.garage-ui .view[hidden],body.garage-ui button[hidden]{display:none!important}
+
+body.garage-ui #app-views,body.garage-ui #chat-view,body.garage-ui #chat-area,body.garage-ui .view{background:transparent!important}
+body.garage-ui .brand>span:last-child{font-size:24px!important;line-height:1!important}
+
+
+/* ===== Pevné rozloženie chatu: zadávacie pole je vždy viditeľné ===== */
+body.garage-ui{height:100dvh!important;overflow:hidden!important}
+body.garage-ui .chat-view{position:relative!important;flex:1 1 0!important;height:auto!important;min-height:0!important;display:grid!important;grid-template-rows:minmax(0,1fr) auto!important;overflow:hidden!important}
+body.garage-ui .chat-view[hidden]{display:none!important}
+body.garage-ui #chat-area{min-height:0!important;overflow-y:auto!important;overscroll-behavior:contain}
+body.garage-ui .composer-wrap{position:relative!important;grid-row:2!important;align-self:end!important;flex-shrink:0!important}
+body.garage-ui #scroll-bottom{position:absolute!important;right:32px;z-index:5;background:#24231f!important;color:#f3efe5!important;border:1px solid #e4e436!important;font:700 11px "Courier New",monospace!important;padding:8px 12px!important;cursor:pointer;box-shadow:3px 3px 0 rgba(0,0,0,.4)!important}
+body.garage-ui #scroll-bottom[hidden]{display:none!important}
+body.garage-ui .message .content[data-thinking="1"]{font:700 13px "Courier New",monospace!important;color:#4a4436!important;-webkit-text-fill-color:#4a4436!important}
+body.garage-ui .message .content[data-thinking="1"]::after{content:'';display:inline-block;width:8px;height:8px;margin-left:8px;background:#e4e436;border:1px solid #1e1b16;animation:tr-think 1s steps(2) infinite}
+@keyframes tr-think{50%{opacity:.15}}
+
+/* ===== Zbaliteľné sekcie (dokumentácia, nastavenia) ===== */
+body.garage-ui .acc-card>.acc-head{cursor:pointer;position:relative;padding-right:38px!important;user-select:none}
+body.garage-ui .acc-card>.acc-head::after{content:'▸';position:absolute;right:12px;top:50%;transform:translateY(-50%) rotate(90deg);font:700 16px "Courier New",monospace;color:#24231f;transition:transform .15s}
+body.garage-ui .acc-card.acc-collapsed>.acc-head::after{transform:translateY(-50%) rotate(0deg)}
+body.garage-ui .acc-card.acc-collapsed>.acc-body{display:none!important}
+body.garage-ui .acc-card>.acc-body{padding-top:10px}
+body.garage-ui .acc-card.acc-collapsed{padding-bottom:12px!important}
+body.garage-ui .acc-card>.acc-head:focus-visible{outline:2px solid #1e1b16!important;outline-offset:2px}
+body.garage-ui .acc-toggle-all{background:transparent!important;color:#c9c1b1!important;border:1px solid #5a5347!important;font:10px "Courier New",monospace!important;padding:7px 10px!important;margin-left:8px;cursor:pointer}
+body.garage-ui #documents-view .acc-toggle-all{color:#3b372f!important;border-color:#a29a89!important}
+body.garage-ui .docs-card{background:#f3efe5!important;color:#111!important;border:1px solid #aa9f8b!important;border-radius:2px!important;box-shadow:4px 4px 0 rgba(0,0,0,.2)!important}
+body.garage-ui .docs-card :is(h3,h2,p,li,b,code,span,small){color:#111!important;-webkit-text-fill-color:#111!important}
+body.garage-ui .docs-card code{background:#e2dccd!important;border:1px solid #b8af9a;padding:1px 5px}
+body.garage-ui .docs-card pre.docs-arch-diagram{background:#191815!important;overflow-x:auto}
+body.garage-ui .docs-card pre.docs-arch-diagram,body.garage-ui .docs-card pre.docs-arch-diagram *{color:#f5f2eb!important;-webkit-text-fill-color:#f5f2eb!important}
+body.garage-ui .docs-settings-index{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+body.garage-ui .docs-settings-index button{background:transparent!important;color:#111!important;border:1px solid #a29a89!important;font:11px Arial,sans-serif!important;padding:7px 10px!important;text-align:left;cursor:pointer}
+body.garage-ui .docs-settings-index button:hover{background:#e4e436!important}
+
+body.garage-ui .message .content,body.garage-ui .message.assistant .content,body.garage-ui .message.user .content{white-space:normal!important}
+body.garage-ui .message .content pre.code-block,body.garage-ui .message .content pre.code-block code{white-space:pre!important}
+
+body.garage-ui .message .content ul.md-list,body.garage-ui .message .content ol.md-list{display:block!important;gap:0!important}

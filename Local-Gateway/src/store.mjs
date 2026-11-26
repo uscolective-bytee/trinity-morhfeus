@@ -1,3 +1,10 @@
+/**
+ * @module TRINITY_OMNI_CORE
+ * @subsystem LOCAL_BRIDGE_GATEWAY
+ * @author Basterix (Root Architect)
+ * @license Sovereign Irrevocable Covenant
+ * @description Modul store.mjs (Local-Gateway/src/store.mjs) v ekosystéme TRINITY OMNI-CORE.
+ */
 import {mkdir,readFile,rename,writeFile,appendFile} from 'node:fs/promises';
 import path from 'node:path';
 import {randomUUID,createHash} from 'node:crypto';

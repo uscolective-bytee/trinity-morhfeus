@@ -1,3 +1,10 @@
+/**
+ * @module TRINITY_OMNI_CORE
+ * @subsystem CORE_RUNTIME
+ * @author Basterix (Root Architect)
+ * @license Sovereign Irrevocable Covenant
+ * @description Modul api-builder.js (Trinity/src/api-builder.js) v ekosystéme TRINITY OMNI-CORE.
+ */
 import {z} from 'zod';
 import {HttpError} from './security.js';
 const slug=z.string().trim().min(2).max(60).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);

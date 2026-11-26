@@ -1,0 +1,923 @@
+{
+  "schema_version": 1,
+  "inventory_date": "2026-10-31",
+  "description": "Read-only migration inventory. This is not a Git mirror, backup, nor evidence of live Cloudflare or secret migration.",
+  "source_repository": "uscolective-byte/trinity-morhfeus",
+  "source_main_sha": "3f99d95ecefb7a56c66683983dcff6d58d0af1d7",
+  "destination_repository": "uscolective-byte/Trinity-antigravity",
+  "destination_branch": "fix/secrets-readiness-and-release-docs-20261031",
+  "destination_head_at_inventory": "1486ccc34eb28f4249d064878ae934d37050649c",
+  "legacy_main_file_inventory": {
+    "source_files": 667,
+    "missing_paths_in_destination_main": 0,
+    "different_blob_contents_in_destination_main": 53
+  },
+  "transferred_into_destination_pr22": [
+    {
+      "source_pr": 68,
+      "paths": [
+        "Trinity/services/wordpress-connector.js",
+        "Trinity/tests/wordpress-connector.test.mjs",
+        "Trinity/docs/WORDPRESS_CONNECTOR_FOUNDATION.md"
+      ],
+      "status": "copied_disabled_unverified"
+    },
+    {
+      "source_pr": 51,
+      "paths": [
+        "Trinity/src/assistant-bridge.js",
+        "Trinity/tests/assistant-bridge.test.mjs",
+        "Trinity/openapi/assistant-bridge.yaml",
+        "Trinity/migrations/0054_assistant_bridge.sql",
+        "Trinity/docs/CHATGPT_COPILOT_BRIDGE.md"
+      ],
+      "status": "copied_and_scoped_api_wired_disabled_pending_migration_and_oauth"
+    },
+    {
+      "source_pr": 76,
+      "paths": [
+        "Trinity/package.json",
+        "Trinity/package-lock.json"
+      ],
+      "status": "wrangler_updated_to_4.154.0_unverified"
+    }
+  ],
+  "branches": [
+    {
+      "name": "backup-legacy-morpheus",
+      "sha": "5f34f766c41ecebf2ec71457df6c5700fbf1b225"
+    },
+    {
+      "name": "codespace-effective-invention-96j64v7gvjjwc7xpp",
+      "sha": "fd20be793862944ad623b53cf4c0a0ad17ad7240"
+    },
+    {
+      "name": "codex/aura-worker-security-refactor-20261023",
+      "sha": "eae6b92a39f8448206588083d9bfcf39d7b8a983"
+    },
+    {
+      "name": "codex/trinity-ui-wallet-truth-20261023",
+      "sha": "31e3c1f84d4f296515a4dad1605c7001c43f3524"
+    },
+    {
+      "name": "dependabot/github_actions/actions/checkout-7",
+      "sha": "9e94cee70800bb63853bd1acf6de627ae6a744bc"
+    },
+    {
+      "name": "dependabot/npm_and_yarn/PC-Bridge-Worker/wrangler-4.154.0",
+      "sha": "66b1f2a812bb1e090b965613e0c8df886e3231e9"
+    },
+    {
+      "name": "dependabot/npm_and_yarn/Trinity/agents-0.31.0",
+      "sha": "e3324b391d596c8cb13e37f6fe27184518550b0c"
+    },
+    {
+      "name": "dependabot/npm_and_yarn/Trinity/cloudflare/workers-types-5.20261028.1",
+      "sha": "0ee00b556ef0511f7430973aef38890664895693"
+    },
+    {
+      "name": "dependabot/npm_and_yarn/Trinity/modelcontextprotocol/ext-apps-2.0.4",
+      "sha": "80af57fb472c5ee200e791c5a85e559db5d30bd4"
+    },
+    {
+      "name": "dependabot/npm_and_yarn/Trinity/modelcontextprotocol/server-2.4.0",
+      "sha": "869173b6c75e0b3d50a2e8a786d1b3b2db15eb50"
+    },
+    {
+      "name": "dependabot/npm_and_yarn/Trinity/wrangler-4.151.3",
+      "sha": "98023c97e186d1677a2da004af68d43e0e20962a"
+    },
+    {
+      "name": "feat/revolut-payments-20261021",
+      "sha": "b59c49441fff425e70b5e9d6353cfffabf9f47ea"
+    },
+    {
+      "name": "feat/streetline-ui-20261024",
+      "sha": "641bb49554f98364279a8f9cc32d3aa947be4965"
+    },
+    {
+      "name": "feat/telegram-bot-webhook-20261024",
+      "sha": "7876dfd3e4335b8c99a90ea3bdbd2e9c3e8bf614"
+    },
+    {
+      "name": "feat/trinity-street-signal-ui-20261024",
+      "sha": "efaa08f206b5614c8813d6e811e6038247c2a35c"
+    },
+    {
+      "name": "feat/wordpress-connector-foundation-20261027",
+      "sha": "4d7a8d868af7ca475991f3d620bac36d0c4276d7"
+    },
+    {
+      "name": "fix/chat-tool-routing-slovak-20261025",
+      "sha": "4926e8601ec92db899725083237d7149dc52ba51"
+    },
+    {
+      "name": "fix/restore-platform-ui-20261021",
+      "sha": "95af010576fdaea05111cabfecd86372b193f8d4"
+    },
+    {
+      "name": "fix/trinity-readonly-health-diagnostics-20261022",
+      "sha": "758d3bb07a15e46dc75240e6626d462183dc3153"
+    },
+    {
+      "name": "fix/trinity-runtime-integrity-20261024",
+      "sha": "920058ffd400620f9c2783277b285cb55ac35f81"
+    },
+    {
+      "name": "fix/ui-actions-20261023",
+      "sha": "771302896c502e29d9062a9595dc0dd517dbe606"
+    },
+    {
+      "name": "integration/chatgpt-copilot-bridge-20261023",
+      "sha": "a1fbd27eb7b06ade0ef498263507f2ee651b1891"
+    },
+    {
+      "name": "main",
+      "sha": "3f99d95ecefb7a56c66683983dcff6d58d0af1d7"
+    },
+    {
+      "name": "master",
+      "sha": "7df40a7840ce802563bc9e05148682bb88e3c5d6"
+    },
+    {
+      "name": "revert-50-fix/ui-actions-20261023",
+      "sha": "58e9d271b770eb75fa21d583e924fbb29e9f47c6"
+    }
+  ],
+  "tags": [
+    {
+      "name": "v10.2.0",
+      "sha": "247ea3f77038ee089fa53a946a2c00fc442fe7a5",
+      "object_type": "tag"
+    },
+    {
+      "name": "v11.0.0",
+      "sha": "001cf35105134d432d90672a105efba8dc37f4df",
+      "object_type": "tag"
+    }
+  ],
+  "pull_requests": [
+    {
+      "number": 76,
+      "title": "chore(deps-dev): bump wrangler from 4.151.1 to 4.154.0 in /Trinity",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-31T14:52:54Z",
+      "head_branch": "dependabot/npm_and_yarn/Trinity/wrangler-4.154.0",
+      "head_sha": "666f394e2e25f66b93bfaf92b3f0389d45bfd8bd",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/76"
+    },
+    {
+      "number": 75,
+      "title": "chore(deps): bump @modelcontextprotocol/ext-apps from 2.0.3 to 2.0.4 in /Trinity",
+      "state": "open",
+      "draft": false,
+      "merged_at": null,
+      "head_branch": "dependabot/npm_and_yarn/Trinity/modelcontextprotocol/ext-apps-2.0.4",
+      "head_sha": "80af57fb472c5ee200e791c5a85e559db5d30bd4",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/75"
+    },
+    {
+      "number": 74,
+      "title": "chore(deps): bump agents from 0.28.1 to 0.31.0 in /Trinity",
+      "state": "open",
+      "draft": false,
+      "merged_at": null,
+      "head_branch": "dependabot/npm_and_yarn/Trinity/agents-0.31.0",
+      "head_sha": "e3324b391d596c8cb13e37f6fe27184518550b0c",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/74"
+    },
+    {
+      "number": 73,
+      "title": "chore(deps-dev): bump @cloudflare/workers-types from 5.20261019.1 to 5.20261028.1 in /Trinity",
+      "state": "open",
+      "draft": false,
+      "merged_at": null,
+      "head_branch": "dependabot/npm_and_yarn/Trinity/cloudflare/workers-types-5.20261028.1",
+      "head_sha": "0ee00b556ef0511f7430973aef38890664895693",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/73"
+    },
+    {
+      "number": 72,
+      "title": "chore(deps-dev): bump wrangler from 4.149.0 to 4.154.0 in /PC-Bridge-Worker",
+      "state": "open",
+      "draft": false,
+      "merged_at": null,
+      "head_branch": "dependabot/npm_and_yarn/PC-Bridge-Worker/wrangler-4.154.0",
+      "head_sha": "66b1f2a812bb1e090b965613e0c8df886e3231e9",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/72"
+    },
+    {
+      "number": 71,
+      "title": "chore(deps): bump @modelcontextprotocol/server from 2.3.1 to 2.4.0 in /Trinity",
+      "state": "open",
+      "draft": false,
+      "merged_at": null,
+      "head_branch": "dependabot/npm_and_yarn/Trinity/modelcontextprotocol/server-2.4.0",
+      "head_sha": "869173b6c75e0b3d50a2e8a786d1b3b2db15eb50",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/71"
+    },
+    {
+      "number": 70,
+      "title": "chore(deps): bump actions/checkout from 4 to 7",
+      "state": "open",
+      "draft": false,
+      "merged_at": null,
+      "head_branch": "dependabot/github_actions/actions/checkout-7",
+      "head_sha": "9e94cee70800bb63853bd1acf6de627ae6a744bc",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/70"
+    },
+    {
+      "number": 68,
+      "title": "feat: bezpečný základ WordPress konektora pre Trinity",
+      "state": "open",
+      "draft": true,
+      "merged_at": null,
+      "head_branch": "feat/wordpress-connector-foundation-20261027",
+      "head_sha": "4d7a8d868af7ca475991f3d620bac36d0c4276d7",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/68"
+    },
+    {
+      "number": 67,
+      "title": "build(deps): bump undici from 7.29.1 to 7.30.1 in /Integrations-Worker in the npm_and_yarn group across 1 directory",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_branch": "dependabot/npm_and_yarn/Integrations-Worker/npm_and_yarn-ff6aa81fbd",
+      "head_sha": "1cb81365eab2e2e88361a096d951f987a12e3f31",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/67"
+    },
+    {
+      "number": 66,
+      "title": "build(deps): bump undici from 7.29.1 to 7.30.1 in /PC-Bridge-Worker in the npm_and_yarn group across 1 directory",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_branch": "dependabot/npm_and_yarn/PC-Bridge-Worker/npm_and_yarn-ff6aa81fbd",
+      "head_sha": "81e3f0de943c9bc4dcdefe30da3ae0e0be2a78e5",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/66"
+    },
+    {
+      "number": 65,
+      "title": "fix(chat): spoľahlivejší výber nástrojov pre slovenčinu",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-24T23:15:37Z",
+      "head_branch": "fix/chat-tool-routing-slovak-20261025",
+      "head_sha": "4926e8601ec92db899725083237d7149dc52ba51",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/65"
+    },
+    {
+      "number": 64,
+      "title": "Trinity Streetline — original urban wayfinding UI",
+      "state": "open",
+      "draft": true,
+      "merged_at": null,
+      "head_branch": "feat/streetline-ui-20261024",
+      "head_sha": "641bb49554f98364279a8f9cc32d3aa947be4965",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/64"
+    },
+    {
+      "number": 63,
+      "title": "Redesign Trinity assistant as STREET SIGNAL urban UI",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-24T22:00:25Z",
+      "head_branch": "feat/trinity-street-signal-ui-20261024",
+      "head_sha": "efaa08f206b5614c8813d6e811e6038247c2a35c",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/63"
+    },
+    {
+      "number": 62,
+      "title": "Add authenticated Telegram bot webhook to Trinity",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-24T20:44:40Z",
+      "head_branch": "feat/telegram-bot-webhook-20261024",
+      "head_sha": "7876dfd3e4335b8c99a90ea3bdbd2e9c3e8bf614",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/62"
+    },
+    {
+      "number": 61,
+      "title": "build(deps): bump actions/checkout from 4 to 7",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-26T19:41:15Z",
+      "head_branch": "dependabot/github_actions/actions/checkout-7",
+      "head_sha": "c7925dce6b9c2503205618cb94fce1d33bda84b0",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/61"
+    },
+    {
+      "number": 60,
+      "title": "build(deps-dev): bump wrangler from 4.151.1 to 4.151.3 in /Trinity",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-24T20:43:51Z",
+      "head_branch": "dependabot/npm_and_yarn/Trinity/wrangler-4.151.3",
+      "head_sha": "98023c97e186d1677a2da004af68d43e0e20962a",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/60"
+    },
+    {
+      "number": 59,
+      "title": "build(deps-dev): bump wrangler from 4.149.0 to 4.151.3 in /PC-Bridge-Worker",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-25T20:52:31Z",
+      "head_branch": "dependabot/npm_and_yarn/PC-Bridge-Worker/wrangler-4.151.3",
+      "head_sha": "0de3400328d260603e2b86bd785ebc91ff608a8e",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/59"
+    },
+    {
+      "number": 58,
+      "title": "chore(deps): bump agents from 0.28.1 to 0.30.1 in /Trinity",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_branch": "dependabot/npm_and_yarn/Trinity/agents-0.29.0",
+      "head_sha": "3b0cab4b189a71b5ace168466e16601374ee4165",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/58"
+    },
+    {
+      "number": 57,
+      "title": "chore(deps-dev): bump @cloudflare/workers-types from 5.20261019.1 to 5.20261024.1 in /Trinity",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_branch": "dependabot/npm_and_yarn/Trinity/cloudflare/workers-types-5.20261021.1",
+      "head_sha": "9d50cb5ade856c1eeba463259ed6e04bf57ce2b0",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/57"
+    },
+    {
+      "number": 56,
+      "title": "Fix runtime evidence, worker authorization and Cloudflare secret bindings",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-24T06:25:58Z",
+      "head_branch": "fix/trinity-runtime-integrity-20261024",
+      "head_sha": "920058ffd400620f9c2783277b285cb55ac35f81",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/56"
+    },
+    {
+      "number": 55,
+      "title": "build(deps): bump the npm_and_yarn group across 1 directory with 2 updates",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-24T04:12:16Z",
+      "head_branch": "dependabot/npm_and_yarn/Trinity/npm_and_yarn-a630dab390",
+      "head_sha": "463ba2b0fd5409508388c8e9c57d080233c610d3",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/55"
+    },
+    {
+      "number": 54,
+      "title": "Security and maintenance audit: Aura Workers gateway, deployments and D1 integrity",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-24T01:51:40Z",
+      "head_branch": "codex/aura-worker-security-refactor-20261023",
+      "head_sha": "eae6b92a39f8448206588083d9bfcf39d7b8a983",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/54"
+    },
+    {
+      "number": 53,
+      "title": "Trinity 11 groundwork: truthful wallet/domain states, simpler UI, agent-lab hardening",
+      "state": "open",
+      "draft": true,
+      "merged_at": null,
+      "head_branch": "codex/trinity-ui-wallet-truth-20261023",
+      "head_sha": "31e3c1f84d4f296515a4dad1605c7001c43f3524",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/53"
+    },
+    {
+      "number": 52,
+      "title": "Revert \"Fix blocked UI buttons and wallet error feedback\"",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-23T03:07:25Z",
+      "head_branch": "revert-50-fix/ui-actions-20261023",
+      "head_sha": "58e9d271b770eb75fa21d583e924fbb29e9f47c6",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/52"
+    },
+    {
+      "number": 51,
+      "title": "feat: Scoped ChatGPT ↔ Copilot Studio bridge for Trinity shared notes",
+      "state": "open",
+      "draft": true,
+      "merged_at": null,
+      "head_branch": "integration/chatgpt-copilot-bridge-20261023",
+      "head_sha": "a1fbd27eb7b06ade0ef498263507f2ee651b1891",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/51"
+    },
+    {
+      "number": 50,
+      "title": "Fix blocked UI buttons and wallet error feedback",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-22T23:34:35Z",
+      "head_branch": "fix/ui-actions-20261023",
+      "head_sha": "771302896c502e29d9062a9595dc0dd517dbe606",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/50"
+    },
+    {
+      "number": 49,
+      "title": "Add read-only health checks for production and PC Bridge",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-24T04:19:27Z",
+      "head_branch": "fix/trinity-readonly-health-diagnostics-20261022",
+      "head_sha": "758d3bb07a15e46dc75240e6626d462183dc3153",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/49"
+    },
+    {
+      "number": 48,
+      "title": "Update issue templates",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-22T00:28:06Z",
+      "head_branch": "main",
+      "head_sha": "10e4ebb72eb7e3c81c59a09d382e7332b046b370",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/48"
+    },
+    {
+      "number": 47,
+      "title": "Synchronize Trinity release, Pro links and deployment verification",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-22T00:51:01Z",
+      "head_branch": "feat/revolut-payments-20261021",
+      "head_sha": "b59c49441fff425e70b5e9d6353cfffabf9f47ea",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/47"
+    },
+    {
+      "number": 46,
+      "title": "Trinity: obnoviť schopnosti, UI a spoľahlivé vykonávanie úloh",
+      "state": "open",
+      "draft": false,
+      "merged_at": null,
+      "head_branch": "fix/restore-platform-ui-20261021",
+      "head_sha": "95af010576fdaea05111cabfecd86372b193f8d4",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/46"
+    },
+    {
+      "number": 45,
+      "title": "Add daily planning agent through Trinity MCP",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-21T08:55:02Z",
+      "head_branch": "feat/daily-planner-sync-20261021",
+      "head_sha": "d0a85223c35ed181516e33e30b50388f0e69be30",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/45"
+    },
+    {
+      "number": 44,
+      "title": "Trinity: vykonateľné nástroje, komunikačné kanály a overiteľné nastavenia",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_branch": "feat/trinity-platform-capabilities",
+      "head_sha": "0166fc1c96f58340f7ef61cd6754de13598c6cb6",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/44"
+    },
+    {
+      "number": 43,
+      "title": "Update issue templates",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-20T22:17:14Z",
+      "head_branch": "uscolective-byte-patch-1",
+      "head_sha": "bdccb5d5ad6a0f0499de66b0c7b8fba01140ac6a",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/43"
+    },
+    {
+      "number": 42,
+      "title": "Trinity: konsolidácia vývoja do jednej pracovnej vetvy",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-20T21:45:20Z",
+      "head_branch": "consolidate/trinity-unified",
+      "head_sha": "6e081212fd06c1d9c74074a104a9141200263e4d",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/42"
+    },
+    {
+      "number": 41,
+      "title": "Trinity 10.3: autonómne vylepšenia, domény, hosting a MCP Apps",
+      "state": "closed",
+      "draft": true,
+      "merged_at": null,
+      "head_branch": "feat/trinity-10-3-evolution-infrastructure",
+      "head_sha": "6e081212fd06c1d9c74074a104a9141200263e4d",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/41"
+    },
+    {
+      "number": 40,
+      "title": "Trinity Hybrid 2: spoločná lokálna a cloudová pamäť, úlohy a AI klienti",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-20T10:57:52Z",
+      "head_branch": "feat/trinity-unified-local-20261020",
+      "head_sha": "bf1cba9dbcd9f0db4abad1ef1bd9999652947048",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/40"
+    },
+    {
+      "number": 39,
+      "title": "Opraviť Copilot runtime, izolovať rozhovory a zjednotiť moduly Trinity",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-20T09:58:26Z",
+      "head_branch": "fix/trinity-plugin-execution-20261020",
+      "head_sha": "163c1f821e723abeb9d1487251c240315e8be42b",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/39"
+    },
+    {
+      "number": 38,
+      "title": "Add Trinity self-improvement and test-gated deployment",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-19T02:58:28Z",
+      "head_branch": "codex/self-improvement-deploy",
+      "head_sha": "12d781e354e34f212911b57bb4ab19eb316c7c76",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/38"
+    },
+    {
+      "number": 37,
+      "title": "Trinity 10.3: evidence-grounded quantum reasoning",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_branch": "codex/trinity-quantum-reasoning",
+      "head_sha": "fa65ed707a3cb9ba5f6957bbf632c9cb175adc23",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/37"
+    },
+    {
+      "number": 36,
+      "title": "Feat/OpenAI trinity agent 20261018",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_branch": "feat/openai-trinity-agent-20261018",
+      "head_sha": "4c4862ba5a59f3963213624f53ce2ccc7bb454b4",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/36"
+    },
+    {
+      "number": 35,
+      "title": "build(deps): bump sharp and wrangler in /Integrations-Worker",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-18T05:16:45Z",
+      "head_branch": "dependabot/npm_and_yarn/Integrations-Worker/multi-d958d94129",
+      "head_sha": "eebe74a9394445405176aae76194309e802f7f8b",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/35"
+    },
+    {
+      "number": 34,
+      "title": "Run approved Node Python and CMD scripts through the local gateway",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-17T22:03:26Z",
+      "head_branch": "codex/trinity-cli-runtimes",
+      "head_sha": "779a6752d551df188dbd6dbf6e95e69506452e2f",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/34"
+    },
+    {
+      "number": 33,
+      "title": "Connect isolated knowledge storage and source-backed chat retrieval",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-17T21:47:03Z",
+      "head_branch": "codex/trinity-knowledge-live",
+      "head_sha": "4ea336dcb83141095ecf26e1472c142364bfec76",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/33"
+    },
+    {
+      "number": 32,
+      "title": "Repair chat PC tool validation and map file/build actions to the bounded gateway",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-17T21:29:38Z",
+      "head_branch": "codex/trinity-live-capabilities",
+      "head_sha": "b1e12d32744fbe01ec00f7690e60c9d1b6ec38bc",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/32"
+    },
+    {
+      "number": 31,
+      "title": "Restore bounded PC gateway work and expose capability execution evidence",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-17T21:24:13Z",
+      "head_branch": "codex/trinity-live-capabilities",
+      "head_sha": "64e8267034b8a0ad083a2160355c2e31b98fee2f",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/31"
+    },
+    {
+      "number": 30,
+      "title": "Verify Gemini actions against artifacts and remove stale PC connectivity claims",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-17T21:05:45Z",
+      "head_branch": "codex/gemini-verification",
+      "head_sha": "360420199ddf59ca4cf23fac0dd88cb0dcba71ff",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/30"
+    },
+    {
+      "number": 29,
+      "title": "Reconcile Trinity production sources and restore isolated development deployment",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-17T20:52:47Z",
+      "head_branch": "codex/trinity-checkup-20261017",
+      "head_sha": "8c182fbc9c3f915ac13d4c7cf3253072a762e700",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/29"
+    },
+    {
+      "number": 28,
+      "title": "build(deps-dev): bump @cloudflare/workers-types from 5.20261011.1 to 5.20261014.1 in /Trinity",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-18T05:20:32Z",
+      "head_branch": "dependabot/npm_and_yarn/Trinity/cloudflare/workers-types-5.20261014.1",
+      "head_sha": "4754d79b693b04b11b5f5d9c6f8c3af267a88ed2",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/28"
+    },
+    {
+      "number": 27,
+      "title": "build(deps): bump agents from 0.24.0 to 0.28.1 in /Trinity",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_branch": "dependabot/npm_and_yarn/Trinity/agents-0.28.1",
+      "head_sha": "69d1b0a5755feaee44503c135a33f80dca287983",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/27"
+    },
+    {
+      "number": 26,
+      "title": "build(deps-dev): bump wrangler from 4.149.0 to 4.151.0 in /PC-Bridge-Worker",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_branch": "dependabot/npm_and_yarn/PC-Bridge-Worker/wrangler-4.151.0",
+      "head_sha": "870b9ed9d25270898e9c09fbb8b9f2e3efc61f9c",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/26"
+    },
+    {
+      "number": 25,
+      "title": "build(deps-dev): bump wrangler from 4.149.0 to 4.151.0 in /Trinity",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_branch": "dependabot/npm_and_yarn/Trinity/wrangler-4.151.0",
+      "head_sha": "b84b993ad95908d4bd3518be4e81ae2b405e4e65",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/25"
+    },
+    {
+      "number": 24,
+      "title": "build(deps): bump zod from 4.6.5 to 4.6.7 in /Trinity",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_branch": "dependabot/npm_and_yarn/Trinity/zod-4.6.7",
+      "head_sha": "ddf47f05c8410a61f1c143b1f7c27ea631fd2af6",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/24"
+    },
+    {
+      "number": 23,
+      "title": "Preserve Trinity events and unify Firebase/Firecrawl deployment on current core",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-14T14:07:54Z",
+      "head_branch": "codex/trinity-integrations-verified-2026-10-14",
+      "head_sha": "f0152a17f2d60c88ed5422aa09524080127738f2",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/23"
+    },
+    {
+      "number": 22,
+      "title": "fix(auth): obnoviť vstup pri neúplnom Google OAuth",
+      "state": "closed",
+      "draft": true,
+      "merged_at": null,
+      "head_branch": "fix/auru-dev-auth-lockout-20261013",
+      "head_sha": "e5dee984ae1187ac3ba04c07c13c9d06a2ce09bc",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/22"
+    },
+    {
+      "number": 21,
+      "title": "feat(trinity): simplify owner communication and add Entra-secured Microsoft Copilot bridge",
+      "state": "closed",
+      "draft": true,
+      "merged_at": null,
+      "head_branch": "feature/microsoft-copilot-entra-bridge-20261013",
+      "head_sha": "fb603346fffe4779796615a50749c52957fbe317",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/21"
+    },
+    {
+      "number": 20,
+      "title": "fix(ci): unify CodeQL workflows and remove duplicate Advanced scan",
+      "state": "closed",
+      "draft": true,
+      "merged_at": null,
+      "head_branch": "fix/consolidate-codeql-20261012",
+      "head_sha": "9fa5a458509e4a8448aa347de58b91c57eead2d6",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/20"
+    },
+    {
+      "number": 18,
+      "title": "chore(deps): bump agents from 0.24.0 to 0.27.0 in /Trinity",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_branch": "dependabot/npm_and_yarn/Trinity/agents-0.27.0",
+      "head_sha": "8f77144e4d8a190853e02928c7f5ce07df53297a",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/18"
+    },
+    {
+      "number": 17,
+      "title": "build(deps): bump @modelcontextprotocol/server from 2.0.0 to 2.3.1 in /Trinity",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_branch": "dependabot/npm_and_yarn/Trinity/modelcontextprotocol/server-2.3.1",
+      "head_sha": "79bbb18c195e5ae2439cf496122de50d38619f07",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/17"
+    },
+    {
+      "number": 16,
+      "title": "build(deps): bump actions/setup-node from 4 to 7",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_branch": "dependabot/github_actions/actions/setup-node-7",
+      "head_sha": "3239f233279a70011905814afaeadc9a4ff628d1",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/16"
+    },
+    {
+      "number": 15,
+      "title": "build(deps): bump actions/checkout from 4 to 7",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-18T04:47:35Z",
+      "head_branch": "dependabot/github_actions/actions/checkout-7",
+      "head_sha": "5b091e58ce99fc6be25d92d86f2349b00be05147",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/15"
+    },
+    {
+      "number": 13,
+      "title": "Trinity-Morhfeus: CI governance, signed audit Worker, D1 migration and AI policy",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-12T10:20:05Z",
+      "head_branch": "feature/morpheus-security-pipeline-20261012",
+      "head_sha": "04b814e2c5da1d49bda7977b66df84ba2e60dea9",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/13"
+    },
+    {
+      "number": 12,
+      "title": "Improve Trinity workspace, admin WRITE, skills and grounded memory",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_branch": "fix/trinity-skills-plugin-quality",
+      "head_sha": "f728e93ade48afdddea6a27bf574f9fef1d2417d",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/12"
+    },
+    {
+      "number": 11,
+      "title": "Fix local Qwen inference instead of placeholder success",
+      "state": "closed",
+      "draft": true,
+      "merged_at": null,
+      "head_branch": "fix/trinity-local-qwen",
+      "head_sha": "66a13557c3f6a2f5ef883f91b58140038dfface2",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/11"
+    },
+    {
+      "number": 10,
+      "title": "feat: add a full installer and skills browser to Trinity",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-11T14:37:37Z",
+      "head_branch": "feat/trinity-installer-catalog-ui-20261011",
+      "head_sha": "4c613fe35e8238ed154181f18e9ad5cc9662ba95",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/10"
+    },
+    {
+      "number": 9,
+      "title": "feat: add 150 skills and 150 trusted plugins to Trinity",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-11T14:21:41Z",
+      "head_branch": "feat/trinity-150-skills-150-plugins-20261011",
+      "head_sha": "52aa981efb8adf32e03f992fe32083835179df18",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/9"
+    },
+    {
+      "number": 8,
+      "title": "Oddelený projektový MCP prístup pre GPT, Gemini, Copilot a Notion",
+      "state": "closed",
+      "draft": true,
+      "merged_at": null,
+      "head_branch": "feat/trinity-shared-project-access",
+      "head_sha": "9c947f94f0c23ea7a45624392a2db9189434b2ac",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/8"
+    },
+    {
+      "number": 7,
+      "title": "Prvý balík jadra: plánovač, pamäť, skills, komunikácia a overený MCP stav",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-11T13:14:33Z",
+      "head_branch": "feat/trinity-assistant-foundations",
+      "head_sha": "516893884799f6f17a7d31b6c7706125f6af1e32",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/7"
+    },
+    {
+      "number": 6,
+      "title": "Spoľahlivé spojenie Trinity cez auru.space so zachovaným auru.dev",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_branch": "fix/trinity-canonical-domain",
+      "head_sha": "a04dbbfda716a8ffb1cb3d5bad6f1333869eb85a",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/6"
+    },
+    {
+      "number": 5,
+      "title": "chore(deps): bump sharp, wrangler and miniflare in /Knowledge-Worker",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_branch": "dependabot/npm_and_yarn/Knowledge-Worker/multi-bf55668d42",
+      "head_sha": "40f9b43b6ea1e3533e25801764050e1a23d4b046",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/5"
+    },
+    {
+      "number": 4,
+      "title": "Integrate Trinity Morpheus Core and fix build workflow",
+      "state": "closed",
+      "draft": true,
+      "merged_at": null,
+      "head_branch": "fix/trinity-build-and-morpheus-core-20261010",
+      "head_sha": "b4da92ac8b62b555090fdd44137e3b33fbc47dcd",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/4"
+    },
+    {
+      "number": 3,
+      "title": "Trinity: improve Settings navigation and verify build",
+      "state": "closed",
+      "draft": true,
+      "merged_at": null,
+      "head_branch": "feature/trinity-settings-ui-20261008",
+      "head_sha": "7508cbb2c8ea76cd21501deacab4407d9ad94907",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/3"
+    },
+    {
+      "number": 2,
+      "title": "Connect Trinity knowledge to Firecrawl and Firebase morfeus-ac7ed",
+      "state": "closed",
+      "draft": true,
+      "merged_at": null,
+      "head_branch": "codex/firebase-firecrawl-2026-10-07",
+      "head_sha": "9ad6b99c43c608cec31befbe1076415fc8a21275",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/2"
+    },
+    {
+      "number": 1,
+      "title": "Add persistent knowledge and personality continuity to Trinity",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-10-07T20:46:38Z",
+      "head_branch": "codex/trinity-knowledge-2026-10-07",
+      "head_sha": "71ef392d5bd227fbabfda6f5df90cbe72a565e5f",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/pull/1"
+    }
+  ],
+  "issues": [
+    {
+      "number": 69,
+      "title": "✦ Kompletná a Profesionálna Dokumentácia Projektu Trinity 11.0",
+      "state": "closed",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/issues/69"
+    },
+    {
+      "number": 19,
+      "title": "Blocker: GitHub Actions runners never start — verify Actions policy 7283 / account restrictions",
+      "state": "closed",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/issues/19"
+    },
+    {
+      "number": 14,
+      "title": "You have reached your Codex usage limits for code reviews. You can see your limits in the [Codex usage dashboard](https://chatgpt.com/codex/cloud/settings/usage).",
+      "state": "closed",
+      "html_url": "https://github.com/uscolective-byte/trinity-morhfeus/issues/14"
+    }
+  ],
+  "blockers_before_source_deletion": [
+    "Preserve every source-only commit and all 25 branch histories as verified Git objects in the destination or an independently tested git mirror.",
+    "Migrate, close or explicitly reject every one of the 11 open PRs after code review and CI, retaining reviews and discussions in an externally readable archive.",
+    "Preserve 73 PR discussions/reviews and 3 issues with audit trail, and both release tags.",
+    "Verify GitHub Actions, webhooks, service accounts, permissions, deployments, packages, environments, Cloudflare Worker bindings, and all secrets manually; secrets cannot be read or copied through GitHub API.",
+    "Complete and test a restorable git bundle/mirror before deleting the legacy source.",
+    "Do not delete source repository while PR #22 CI fails and its production deployment remains unverified."
+  ],
+  "repo_deletion_performed": false,
+  "external_data_migration_performed": false,
+  "ci_passed": false,
+  "backup_verified": false
+}

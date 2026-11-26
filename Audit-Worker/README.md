@@ -13,3 +13,5 @@ Audit-only Cloudflare Worker for CI/CD; it has **no execution, deployment or PC 
 Signed headers: `X-Trinity-Audit-Timestamp` is Unix seconds; `X-Trinity-Audit-Signature` equals `sha256=<HMAC_SHA256(timestamp + '.' + raw_json)>`. Reject timestamps older than five minutes. Use `event_id` UUID as idempotency key, and allowlisted commit/repo/trigger/status values.
 
 `GET /health` gives readiness only; no secrets. For protection in depth, restrict network access with Cloudflare Access when feasible. **This code does not deploy anything automatically.**
+
+`GET /openapi.json` documents the existing signed `/v1/audit` contract. There is no public audit-log read endpoint. UUID and ISO time are already generated in application code; the existing `ts TEXT` column is retained. Migration `0033_audit_time_index.sql` adds global chronological lookup alongside the existing repository/time and SHA indexes. Apply it after 0032 to the database actually bound to the Audit Worker, not an assumed production database.

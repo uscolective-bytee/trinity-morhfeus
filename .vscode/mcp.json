@@ -1,0 +1,40 @@
+{
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "trinity-mcp-token",
+      "description": "Trinity MCP Bearer token (trn_live_...)",
+      "password": true
+    }
+  ],
+  "servers": {
+    "desktop-commander": {
+      "type": "http",
+      "url": "https://mcp.desktopcommander.app/mcp"
+    },
+    "trinity": {
+      "type": "http",
+      "url": "https://auru.space/mcp",
+      "headers": {
+        "Authorization": "Bearer ${input:trinity-mcp-token}"
+      }
+    },
+    "trinity-development": {
+      "type": "http",
+      "url": "https://auru.dev/mcp",
+      "headers": {
+        "Authorization": "Bearer ${input:trinity-mcp-token}"
+      }
+    },
+    "trinity-local": {
+      "command": "node",
+      "args": [
+        "${workspaceFolder}\\scripts\\trinity-mcp-bridge\\server.mjs"
+      ],
+      "env": {
+        "MCP_STDIO": "true",
+        "TRINITY_WORKSPACE": "${workspaceFolder}"
+      }
+    }
+  }
+}

@@ -1,3 +1,11 @@
+/**
+ * @module TRINITY_OMNI_CORE
+ * @subsystem LOCAL_BRIDGE_GATEWAY
+ * @author Basterix (Root Architect)
+ * @license Sovereign Irrevocable Covenant
+ * @description Modul server.mjs (Local-Gateway/src/server.mjs) v ekosystéme TRINITY OMNI-CORE.
+ */
+import './trinity123/environment.mjs';
 import http from 'node:http';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -7,6 +15,9 @@ import {ProposalStore} from './store.mjs';
 import {executeProposal,readWorkspaceFile} from './executor.mjs';
 import {startCloudLink} from './cloud-link.mjs';
 import {startBridgeHeartbeat} from './bridge-heartbeat.mjs';
+import {DEVELOPER_TOOLS} from './developer-tools.mjs';
+import {inspectWindowsSession,executePrivileged,ROOT_REGISTRY} from './trinity-auth-core.mjs';
+import {createTrinity123Routes} from './trinity123/gateway-route.mjs';
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const gatewayRoot=path.resolve(here,'..');
@@ -15,6 +26,7 @@ const dataDir=path.resolve(process.env.TRINITY_GATEWAY_DATA||path.join(gatewayRo
 const token=process.env.TRINITY_LOCAL_TOKEN || '';
 const store=new ProposalStore(dataDir);await store.init();
 const recoveredInterrupted=await store.recoverInterrupted();
+const trinity123Routes=createTrinity123Routes({dataDir});
 let cloudState={status:process.env.TRINITY_GATEWAY_KEY?'connecting':'not-configured'};
 let pcBridgeState={status:process.env.TRINITY_PC_BRIDGE_KEY?'connecting':'not-configured'};
 
@@ -32,6 +44,46 @@ const server=http.createServer(async(request,response)=>{
     const url=new URL(request.url,'http://127.0.0.1');
     if(request.method==='GET'&&url.pathname==='/health')return send(response,200,{service:'Trinity Local Gateway',version:'1.3.0',status:'ready',synchronization:cloudState.status==='connected'&&pcBridgeState.status==='connected'?'connected':'degraded',binding:'127.0.0.1',local_auth:token?'required':'misconfigured',cloud:cloudState.status,cloud_last_success_at:cloudState.last_success_at||null,pc_bridge:pcBridgeState.status,pc_bridge_last_success_at:pcBridgeState.last_success_at||null,desktop_control:'approval-required',local_model:'qwen3:4b-instruct',recovered_interrupted:recoveredInterrupted.length});
     if(!authorized(request))return send(response,401,{error:'Neplatné lokálne oprávnenie.'});
+    if(await trinity123Routes(request,response,url,body))return;
+    if(request.method==='GET'&&url.pathname==='/api/auth/status'){
+      const currentSession=inspectWindowsSession();
+      return send(response,200,{
+        trinity_status:'ONLINE',
+        active_operator:currentSession.username,
+        is_root_authorized:currentSession.authenticated,
+        system_role:currentSession.role,
+        sid:currentSession.sid,
+        root_registry:ROOT_REGISTRY
+      });
+    }
+    if(request.method==='POST'&&url.pathname==='/api/execute-privileged'){
+      const input=await body(request);
+      if(!ACTIONS.has(input.action))return send(response,400,{error:'Neznáma systémová schopnosť.'});
+      const authContext={
+        email:input.email||request.headers['x-trinity-operator-email'],
+        phone:input.phone||request.headers['x-trinity-operator-phone'],
+        windowsUser:input.windowsUser||request.headers['x-trinity-windows-user'],
+        verifiedGoogleToken:false,
+        verifiedWebhookSignature:false,
+        verifiedWindowsToken:false,
+        checkLocalWindows:true
+      };
+      const result=await executePrivileged(
+        authContext,
+        {action:input.action,target:input.payload?.path||input.payload?.task||input.action},
+        async(verifiedAuth)=>{
+          const proposal=await store.create(input.action,input.payload||{},verifiedAuth.identifier);
+          await store.transition(proposal.id,['proposed'],'approved',{approvedAt:new Date().toISOString(),approvedBy:`BASTERIX_ROOT:${verifiedAuth.channel}`});
+          await store.transition(proposal.id,['approved'],'executing',{executionStartedAt:new Date().toISOString()});
+          const receipt=await executeProposal(workspaceRoot,{...proposal,status:'approved'},dataDir);
+          const final=receipt.success===false?'failed':'completed';
+          await store.transition(proposal.id,['executing'],final,{receipt,completedAt:new Date().toISOString()});
+          return {status:final,operator:verifiedAuth.operator,channel:verifiedAuth.channel,identifier:verifiedAuth.identifier,receipt};
+        }
+      );
+      return send(response,result.status==='completed'?200:422,result);
+    }
+    if(request.method==='GET'&&url.pathname==='/api/developer-tools')return send(response,200,{tools:DEVELOPER_TOOLS,execution:'request_system_action',task:'developer-tools',operations:['catalog','inspect','create','install','execute']});
     if(request.method==='GET'&&url.pathname==='/api/sync/status')return send(response,200,{cloud:cloudState,pc_bridge:pcBridgeState,queue:await store.stats(),recovered_interrupted:recoveredInterrupted});
     if(request.method==='GET'&&url.pathname==='/api/capabilities')return send(response,200,{internal:true,capabilities:CAPABILITIES});
     if(request.method==='GET'&&url.pathname==='/api/proposals')return send(response,200,{items:await store.list()});

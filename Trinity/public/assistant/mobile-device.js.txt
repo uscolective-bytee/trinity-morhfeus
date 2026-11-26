@@ -1,0 +1,56 @@
+/* Existing authenticated Trinity remains the execution backend. No device keys or private data are cached here. */
+(() => {
+  if(document.getElementById('mobile-device-button'))return;
+  const host=document.querySelector('.header-actions');
+  if(!host)return;
+  const make=(tag,text)=>{const node=document.createElement(tag);if(text)node.textContent=text;return node;};
+  const viewport=document.querySelector('meta[name="viewport"]');
+  if(viewport&&!viewport.content.includes('viewport-fit'))viewport.content+=',viewport-fit=cover';
+  const updateViewport=()=>{
+    const view=window.visualViewport;
+    if(view&&view.scale!==1)return;
+    const height=Math.round(view?.height||window.innerHeight);
+    if(height>0)document.documentElement.style.setProperty('--trinity-viewport-height',height+'px');
+  };
+  updateViewport();window.visualViewport?.addEventListener('resize',updateViewport);window.addEventListener('resize',updateViewport);
+  const button=make('button','Telefón');button.id='mobile-device-button';button.type='button';button.setAttribute('aria-haspopup','dialog');host.append(button);
+  const dialog=make('dialog');dialog.id='mobile-device-dialog';dialog.setAttribute('aria-labelledby','mobile-device-title');
+  const title=make('h2','Trinity v telefóne');title.id='mobile-device-title';
+  const status=make('p');status.setAttribute('role','status');
+  const description=make('p','Rovnaký účet, rozhovory a cloudové nástroje. Fotografia a hlas sa použijú iba po tvojom výbere.');
+  const list=make('ul');
+  const online=make('li');const installation=make('li');const account=make('li');list.append(online,installation,account);
+  const actions=make('div');actions.className='device-actions';
+  const install=make('button','Pridať na plochu');install.type='button';
+  const photo=make('button','Vybrať fotografiu');photo.type='button';
+  const voice=make('button','Použiť hlas');voice.type='button';
+  const close=make('button','Zavrieť');close.type='button';
+  actions.append(install,photo,voice,close);
+  const note=make('p','Android: menu prehliadača → Inštalovať aplikáciu alebo Pridať na plochu. iPhone: Zdieľať → Pridať na plochu.');note.className='device-note';
+  const boundary=make('p','Webová aplikácia neznamená plný prístup k SMS, iným aplikáciám alebo súborom na pozadí. Samostatné zariadenie s rozšírenými právami ešte nie je spárované.');boundary.className='device-note';
+  dialog.append(title,status,description,list,actions,note,boundary);document.body.append(dialog);
+  let promptEvent=null;
+  const refresh=()=>{
+    online.textContent=navigator.onLine?'Sieť: prehliadač hlási pripojenie. Stav služby sa overuje pri požiadavke.':'Sieť: offline. Úlohy sa automaticky neopakujú.';
+    const standalone=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+    installation.textContent=standalone?'Otvorené ako samostatná aplikácia.':'Otvorené v prehliadači; inštaláciu dokončuješ na tomto telefóne.';
+    install.hidden=standalone;
+    const guest=document.getElementById('login')?.hidden===false;
+    account.textContent=guest?'Účet: najprv sa prihlás do Trinity.':'Účet: platnosť relácie a oprávnenia overuje server pri každej akcii.';
+    photo.disabled=guest||!document.getElementById('image-input');
+    voice.disabled=guest||!navigator.mediaDevices?.getUserMedia||typeof MediaRecorder==='undefined';
+  };
+  window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();promptEvent=event;refresh();});
+  window.addEventListener('appinstalled',()=>{promptEvent=null;status.textContent='Prehliadač potvrdil inštaláciu aplikácie.';refresh();});
+  window.addEventListener('online',refresh);window.addEventListener('offline',refresh);
+  install.onclick=async()=>{
+    if(!promptEvent){status.textContent='Použi menu prehliadača podľa návodu nižšie.';return;}
+    const current=promptEvent;promptEvent=null;
+    try{await current.prompt();const choice=await current.userChoice;status.textContent=choice.outcome==='accepted'?'Inštalácia bola prijatá; dokončenie potvrdí prehliadač.':'Inštalácia nebola potvrdená.';}catch{status.textContent='Prehliadač teraz inštaláciu neponúkol. Použi jeho menu.';}
+  };
+  photo.onclick=()=>{const input=document.getElementById('image-input');if(photo.disabled||!input)return;input.setAttribute('capture','environment');dialog.close();input.click();};
+  voice.onclick=()=>{if(voice.disabled)return;dialog.close();document.getElementById('record-voice')?.click();};
+  close.onclick=()=>dialog.close();
+  button.onclick=()=>{refresh();status.textContent='';dialog.showModal();};
+  refresh();
+})();

@@ -1,0 +1,35 @@
+// Cache only these public assets. Never cache API replies, account data or user files.
+const CACHE_NAME='trinity-mobile-public-v1';
+const STATIC_ASSETS=new Set(['/chat.js','/chat.css','/builder.css','/garage.css','/garage-v1.webp','/auth-bootstrap.js','/manifest.json','/mobile.css','/mobile-device.js','/mobile-icon-192.png','/mobile-icon-512.png']);
+const offline=()=>new Response('<!doctype html><html lang="sk"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Trinity bez pripojenia</title><body style="background:#191916;color:#f3efe5;font:18px Arial;padding:28px"><h1>Trinity je bez pripojenia</h1><p>Pripoj telefón k internetu a obnov stránku. Žiadna nová úloha nebola odoslaná ani automaticky zopakovaná.</p></body></html>',{status:503,headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'}});
+self.addEventListener('install',event=>{
+  event.waitUntil((async()=>{
+    const cache=await caches.open(CACHE_NAME);
+    await Promise.allSettled([...STATIC_ASSETS].map(async path=>{const response=await fetch(path);if(response.ok)await cache.put(path,response);}));
+    await self.skipWaiting();
+  })());
+});
+self.addEventListener('activate',event=>{
+  event.waitUntil((async()=>{
+    for(const key of await caches.keys())if(key.startsWith('trinity-mobile-public-')&&key!==CACHE_NAME)await caches.delete(key);
+    await self.clients.claim();
+  })());
+});
+self.addEventListener('fetch',event=>{
+  const request=event.request,url=new URL(request.url);
+  if(request.method!=='GET'||url.origin!==self.location.origin)return;
+  if(request.mode==='navigate'&&url.pathname==='/'){
+    event.respondWith(fetch(request).catch(offline));return;
+  }
+  if(!STATIC_ASSETS.has(url.pathname))return;
+  event.respondWith((async()=>{
+    const cache=await caches.open(CACHE_NAME);
+    try{
+      const response=await fetch(request);
+      if(response.ok)await cache.put(url.pathname,response.clone()).catch(()=>{});
+      return response;
+    }catch{
+      return await cache.match(url.pathname)||new Response('Verejný súbor teraz nie je dostupný.',{status:503,headers:{'Content-Type':'text/plain; charset=utf-8'}});
+    }
+  })());
+});

@@ -32,6 +32,25 @@ test('parameterized D1 insert succeeds',async()=>{
  }};
  const response=await handleRequest(new Request('https://audit.test/v1/audit',{method:'POST',headers:{'content-type':'application/json','X-Trinity-Audit-Timestamp':timestamp,'X-Trinity-Audit-Signature':'sha256='+signature},body}),env);
  assert.equal(response.status,201);
+ assert.match(query,/INSERT INTO ops_ci_audit_log/);
  assert.match(query,/VALUES/);
  assert.equal(bound[1],'uscolective-byte/trinity-morhfeus');
+});
+test('unsigned and expired audit requests never touch D1',async()=>{
+ const body=JSON.stringify(valid());let touched=false;
+ const env={AUDIT_HMAC_KEY:key,AUDIT_ALLOWED_REPOS:'uscolective-byte/trinity-morhfeus',DB:{prepare(){touched=true;throw Error('must not write');}}};
+ const timestamp=String(Math.floor(Date.now()/1000)-600);
+ const signature=createHmac('sha256',key).update(timestamp+'.'+body).digest('hex');
+ for(const extra of [{},{'X-Trinity-Audit-Timestamp':timestamp,'X-Trinity-Audit-Signature':'sha256='+signature}]){
+  const response=await handleRequest(new Request('https://audit.test/v1/audit',{method:'POST',headers:{'content-type':'application/json',...extra},body}),env);
+  assert.equal(response.status,401);
+ }
+ assert.equal(touched,false);
+});
+test('OpenAPI documents the actual signed endpoint without exposing logs',async()=>{
+ const response=await handleRequest(new Request('https://audit.test/openapi.json'),{});
+ assert.equal(response.status,200);
+ const spec=await response.json();assert.ok(spec.paths['/v1/audit'].post);
+ assert.equal(spec.components.securitySchemes.auditSignature.name,'X-Trinity-Audit-Signature');
+ assert.equal((await handleRequest(new Request('https://audit.test/v1/audit'),{})).status,405);
 });

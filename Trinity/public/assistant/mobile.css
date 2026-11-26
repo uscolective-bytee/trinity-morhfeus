@@ -1,0 +1,43 @@
+/* Mobile companion layer. Retains the owner's garage background and existing APIs. */
+#mobile-device-button{display:none}
+#mobile-device-dialog{max-width:480px;width:calc(100% - 28px);max-height:calc(100dvh - 28px);overflow:auto;background:#f3efe5;color:#191916;border:2px solid #655b46;border-radius:4px;padding:22px;box-sizing:border-box}
+#mobile-device-dialog::backdrop{background:rgba(15,14,12,.72)}
+#mobile-device-dialog h2{margin:0 0 12px;color:#191916}
+#mobile-device-dialog p,#mobile-device-dialog li{color:#3b372f;line-height:1.5}
+#mobile-device-dialog button{min-height:44px;background:#e4e436;color:#191916;border:1px solid #655b46;padding:10px 14px;border-radius:2px;font:600 14px Arial,sans-serif}
+#mobile-device-dialog .device-actions{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+#mobile-device-dialog button:disabled{opacity:.5;cursor:not-allowed}
+#mobile-device-dialog button:focus-visible{outline:3px solid #191916;outline-offset:3px}
+#mobile-device-dialog .device-note{font-size:13px}
+@media(max-width:760px){
+ html,body.garage-ui{width:100%;min-height:0;overscroll-behavior:none}
+ body.garage-ui{display:flex!important;flex-direction:column!important;height:var(--trinity-viewport-height,100dvh)!important;overflow:hidden!important}
+ body.garage-ui .sidebar{flex:0 0 auto!important;padding:10px 10px 8px!important;box-sizing:border-box!important}
+ body.garage-ui .brand{padding:0 0 8px!important}
+ body.garage-ui .brand>span:last-child{font-size:20px!important}
+ body.garage-ui .brand small{display:none!important}
+ body.garage-ui .main-nav{scrollbar-width:thin;padding-bottom:3px}
+ body.garage-ui .main-nav button{min-height:40px;margin:0!important}
+ body.garage-ui main{flex:1 1 0!important;min-height:0!important;height:auto!important;margin:0!important;padding:6px!important;box-sizing:border-box!important}
+ body.garage-ui header{flex:0 0 auto;height:auto!important;min-height:0!important;gap:5px;padding:8px!important}
+ body.garage-ui header .page-heading{display:none!important}
+ body.garage-ui .header-actions{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;width:100%;height:auto!important;align-items:center}
+ body.garage-ui #account-state{display:none!important}
+ body.garage-ui .header-actions button{min-height:40px}
+ body.garage-ui #mobile-device-button{display:inline-flex!important;align-items:center}
+ body.garage-ui #language{display:inline-block!important;min-height:40px;width:58px}
+ body.garage-ui #app-views{flex:1 1 0!important;min-height:0!important}
+ body.garage-ui #chat-area{padding:12px 2px!important;overflow-wrap:anywhere}
+ body.garage-ui .message{max-width:100%;min-width:0}
+ body.garage-ui .message pre{max-width:100%;overflow-x:auto}
+ body.garage-ui .composer-wrap{padding:5px 0 max(8px,env(safe-area-inset-bottom))!important}
+ body.garage-ui #chat-form{padding:8px!important}
+ body.garage-ui #message{font-size:16px!important;max-height:26dvh}
+ body.garage-ui .compose-bottom{gap:6px;align-items:flex-end;flex-wrap:wrap}
+ body.garage-ui .compose-settings{min-width:0;flex-wrap:wrap;gap:5px}
+ body.garage-ui .compose-settings button,body.garage-ui #send{min-height:44px}
+ body.garage-ui .footnote{padding-bottom:env(safe-area-inset-bottom)}
+ body.garage-ui #welcome{padding:18px!important;margin:8px 2px!important}
+ body.garage-ui #welcome h1{font:800 30px/1.15 Arial,Helvetica,sans-serif!important;letter-spacing:-.6px!important;white-space:normal!important;overflow-wrap:break-word}
+ body.garage-ui dialog{max-width:calc(100vw - 20px);max-height:calc(var(--trinity-viewport-height,100dvh) - 20px);overflow:auto}
+}

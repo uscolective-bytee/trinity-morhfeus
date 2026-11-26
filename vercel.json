@@ -1,0 +1,44 @@
+{
+  "version": 2,
+  "name": "trinity-sovereign-os",
+  "outputDirectory": "Trinity/public",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "no-referrer"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://auru.space/api/:path*"
+    },
+    {
+      "source": "/mcp",
+      "destination": "https://auru.space/mcp"
+    },
+    {
+      "source": "/mcp/:path*",
+      "destination": "https://auru.space/mcp/:path*"
+    }
+  ],
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": "",
+  "installCommand": ""
+}

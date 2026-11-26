@@ -1,0 +1,52 @@
+name: Morpheus to canonical Trinity sync
+
+on:
+  schedule:
+    - cron: '7,22,37,52 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/morpheus-sync.yml'
+      - 'scripts/morpheus-sync-runner.mjs'
+      - 'scripts/morpheus-sync-policy.mjs'
+      - 'tests/morpheus-sync-policy.test.mjs'
+
+# Public source is read-only; never force-push or update canonical main
+# directly. Open a reviewable PR, run security checks, merge only docs
+# after the checks and GitHub merge gate succeed.
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  actions: write
+  checks: read
+  statuses: read
+
+concurrency:
+  group: trinity-morpheus-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: github.repository == 'uscolective-byte/Trinity-antigravity' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 25
+    steps:
+      - name: Checkout canonical history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Prepare Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate sync runner syntax and fail-closed policy
+        run: |
+          node --check scripts/morpheus-sync-runner.mjs
+          node --check scripts/morpheus-sync-policy.mjs
+          node --test tests/morpheus-sync-policy.test.mjs
+      - name: Preserve Morpheus Git refs and propose a guarded sync PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/morpheus-sync-runner.mjs

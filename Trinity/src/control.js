@@ -1,3 +1,10 @@
+/**
+ * @module TRINITY_OMNI_CORE
+ * @subsystem CORE_RUNTIME
+ * @author Basterix (Root Architect)
+ * @license Sovereign Irrevocable Covenant
+ * @description Modul control.js (Trinity/src/control.js) v ekosystéme TRINITY OMNI-CORE.
+ */
 import {HttpError} from './security.js';
 export async function readControl(env){
   const row=await env.DB.prepare('SELECT emergency_stop,reason,updated_by,updated_at FROM ops_control WHERE id=1').first();

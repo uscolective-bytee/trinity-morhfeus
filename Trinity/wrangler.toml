@@ -1,0 +1,19 @@
+name = "trinity"
+main = "src/index.ts"
+compatibility_date = "2026-11-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+ENVIRONMENT = "production"
+
+[[services]]
+binding = "TRINITY_SENTINEL"
+service = "trinity-sentinel"
+
+[[services]]
+binding = "TRINITY_AUDIT"
+service = "trinity-audit"
+
+[[services]]
+binding = "TRINITY_BROWSER"
+service = "trinity-browser"

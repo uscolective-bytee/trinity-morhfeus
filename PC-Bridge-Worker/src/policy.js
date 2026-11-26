@@ -1,3 +1,10 @@
+/**
+ * @module TRINITY_OMNI_CORE
+ * @subsystem PC_BRIDGE_EDGE_WORKER
+ * @author Basterix (Root Architect)
+ * @license Sovereign Irrevocable Covenant
+ * @description Modul policy.js (PC-Bridge-Worker/src/policy.js) v ekosystéme TRINITY OMNI-CORE.
+ */
 export const ACTIONS=Object.freeze(['read','write','edit','selfwrite','run','deploy','share','upload','upgrade']);
 export const ACTION_STATUSES=Object.freeze(['proposed','approved','claimed','completed','failed','rejected']);
 const ACTION_SET=new Set(ACTIONS);

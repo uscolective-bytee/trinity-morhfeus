@@ -1,3 +1,10 @@
+/**
+ * @module TRINITY_OMNI_CORE
+ * @subsystem CORE_RUNTIME
+ * @author Basterix (Root Architect)
+ * @license Sovereign Irrevocable Covenant
+ * @description Modul email.js (Trinity/src/email.js) v ekosystéme TRINITY OMNI-CORE.
+ */
 function domainOf(address=''){
   const value=String(address).trim().toLowerCase();
   const at=value.lastIndexOf('@');

@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "wrangler deploy --dry-run --outdir dist",
+    "build": "wrangler deploy --dry-run --env=\"\" --outdir dist",
     "test": "npm run build && node --test tests/*.test.mjs"
   },
   "devDependencies": {
@@ -14,5 +14,8 @@
   "allowScripts": {
     "workerd@1.20261006.1": true,
     "esbuild@0.28.2": true
+  },
+  "overrides": {
+    "undici": "7.30.1"
   }
 }

@@ -1,8 +1,11 @@
+[CmdletBinding()]
+param([ValidateSet('production','development')][string]$Environment = 'production')
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $MyInvocation.MyCommand.Path
 $credentials = Join-Path $root '.credentials'
 New-Item -ItemType Directory -Path $credentials -Force | Out-Null
-$target = Join-Path $credentials 'gateway-key.dpapi'
+$credentialFile = if ($Environment -eq 'development') { 'gateway-key-development.dpapi' } else { 'gateway-key.dpapi' }
+$target = Join-Path $credentials $credentialFile
 if (-not (Test-Path -LiteralPath $target)) {
   $bytes = New-Object byte[] 48
   $generator = [System.Security.Cryptography.RandomNumberGenerator]::Create()
@@ -22,7 +25,8 @@ $ptr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
 try {
   $value = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($ptr)
   Set-Location (Join-Path $root '..\Trinity')
-  $value | npx wrangler secret put TRINITY_GATEWAY_KEY
+  $wranglerEnvironment = if ($Environment -eq 'development') { 'development' } else { '' }
+  $value | node node_modules/wrangler/bin/wrangler.js secret put TRINITY_GATEWAY_KEY "--env=$wranglerEnvironment"
   if ($LASTEXITCODE -ne 0) { throw 'Cloudflare odmietol uloženie tajomstva.' }
 } finally {
   $value = $null

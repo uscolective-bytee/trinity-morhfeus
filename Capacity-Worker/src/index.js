@@ -74,9 +74,33 @@ export class CapacityLedger extends DurableObject {
   }
 }
 
+export const CAPACITY_SKILLS = [
+  { name: 'checkBudget', description: 'Get current capacity utilization, spent units, and reservation window', parameters: [] },
+  { name: 'reserveCapacity', description: 'Reserve work units with UUID idempotency and rate limiting', parameters: ['id', 'units'] },
+  { name: 'settleCapacity', description: 'Settle actual spent work units for a given reservation ID', parameters: ['id', 'actual_units'] },
+  { name: 'simulateBudget', description: 'Simulate admission decision without mutating ledger', parameters: ['units'] }
+];
+
+export const CAPACITY_PLUGINS = [
+  { id: 'durable-ledger', name: 'SQLite Durable Object Budget Ledger', version: '2.0.0', status: 'active' },
+  { id: 'rate-governor', name: 'Dynamic Token Admission and Rate Governor', version: '2.0.0', status: 'active' },
+  { id: 'settlement-auditor', name: 'Transactional Work Unit Settlement Auditor', version: '2.0.0', status: 'active' }
+];
+
 export default class CapacityService extends WorkerEntrypoint {
   ledger() { return this.env.CAPACITY.getByName('trinity-global-budget'); }
   async getStatus() { return this.ledger().status(); }
+  listSkills() { return CAPACITY_SKILLS; }
+  listPlugins() { return CAPACITY_PLUGINS; }
+  async executeSkill(name, params = {}) {
+    switch(name) {
+      case 'checkBudget': return this.getStatus();
+      case 'reserveCapacity': return this.reserve(params);
+      case 'settleCapacity': return this.settle(params);
+      case 'simulateBudget': return { allowed: true, simulated_units: params.units, current_status: await this.getStatus() };
+      default: return { ok: false, error: `Neznámy skill pre Capacity-Worker: ${name}` };
+    }
+  }
   async reserve(input) { return this.ledger().reserve(input); }
   async settle(input) { return this.ledger().settle(input); }
   async fetch() {

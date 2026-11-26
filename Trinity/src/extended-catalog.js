@@ -1,3 +1,10 @@
+/**
+ * @module TRINITY_OMNI_CORE
+ * @subsystem CORE_RUNTIME
+ * @author Basterix (Root Architect)
+ * @license Sovereign Irrevocable Covenant
+ * @description Modul extended-catalog.js (Trinity/src/extended-catalog.js) v ekosystéme TRINITY OMNI-CORE.
+ */
 // Rozšírený dôveryhodný katalóg Trinity. Položky používajú iba nástroje jadra.
 const skillGroups = [
   ["delivery", "Dodanie", ["Rozsah", "Požiadavky", "Míľniky", "Závislosti", "Riziká", "Akceptácia", "Priority", "Backlog", "Stav", "Retrospektíva"], ["Riadenie", "Podpora a automatizácia"]],

@@ -1,0 +1,25 @@
+(()=>{
+ const params=new URLSearchParams(location.search),code=params.get('code'),state=params.get('state'),denied=params.has('error');
+ // Remove OAuth code from address/history before making any further requests.
+ if(location.pathname.endsWith('/callback'))history.replaceState(null,'','/connect/meta');
+ const status=document.getElementById('meta-status'),details=document.getElementById('meta-details');
+ const start=document.getElementById('meta-start'),verify=document.getElementById('meta-verify');
+ const endpoint='/api/assistant/connectors/meta';
+ async function api(suffix='',data){
+  const response=await fetch(endpoint+suffix,{method:data?'POST':'GET',credentials:'same-origin',cache:'no-store',headers:data?{'Content-Type':'application/json'}:{},body:data?JSON.stringify(data):undefined});
+  const result=await response.json();if(!response.ok)throw Error(response.status===401?'Najprv sa prihlás do Trinity a potom otvor prepojenie znova.':result.error||'Prepojenie Meta zlyhalo.');
+  return result;
+ }
+ function render(result){
+  status.textContent=result.status==='needs_setup'?'Meta aplikácia ešte nie je nakonfigurovaná.':result.status==='connected_read_only'?'Účet bol overený. Publikovanie je vypnuté.':result.status==='expired'?'Platnosť pripojenia vypršala. Prihlás účet znova.':'Účet ešte nie je pripojený.';
+  details.textContent=JSON.stringify(result,null,2);
+  start.disabled=result.status==='needs_setup';verify.disabled=result.status!=='connected_read_only';
+ }
+ function error(e){status.textContent=e.message;}
+ start.onclick=async()=>{start.disabled=true;try{const result=await api('/start',{});const target=new URL(result.authorization_url);if(target.protocol!=='https:'||target.hostname!=='www.facebook.com')throw Error('Neplatná prihlasovacia adresa.');location.assign(target.href);}catch(e){error(e);start.disabled=false;}};
+ verify.onclick=async()=>{verify.disabled=true;try{render(await api('/verify',{}));}catch(e){error(e);}};
+ (async()=>{try{
+  if(denied){render(await api());status.textContent='Prihlásenie Meta bolo odmietnuté. Účet sa nepripojil.';return;}
+  render(code&&state?await api('/complete',{code,state}):await api());
+ }catch(e){error(e);}})();
+})();

@@ -1,3 +1,10 @@
+/**
+ * @module TRINITY_OMNI_CORE
+ * @subsystem CORE_RUNTIME
+ * @author Basterix (Root Architect)
+ * @license Sovereign Irrevocable Covenant
+ * @description Modul preview-mode.js (Trinity/src/preview-mode.js) v ekosystéme TRINITY OMNI-CORE.
+ */
 // A build-only Preview verifies packaging, not integrations or production access.
 export function isBuildOnlyPreview(env) {
   return env?.TRINITY_PREVIEW_MODE === 'build-only';

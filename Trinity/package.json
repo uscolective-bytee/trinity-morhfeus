@@ -1,35 +1,58 @@
 {
-  "name": "trinity-operational-center",
-  "version": "9.4.3",
+  "name": "trinity",
+  "version": "11.1.0",
+  "license": "MIT",
+  "author": "Ivan Sabo (Basterix31) <saboivan2008@gmail.com>",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev --ip 127.0.0.1",
-    "build": "wrangler deploy --dry-run --outdir dist",
-    "deploy": "wrangler deploy",
+    "dev": "wrangler dev --ip 127.0.0.1 --config wrangler.jsonc --env=\"\"",
+    "build": "node scripts/build-mcp-app.mjs && wrangler deploy --dry-run --config wrangler.jsonc --env=\"\" --outdir dist",
+    "deploy": "node scripts/build-mcp-app.mjs && wrangler deploy --config wrangler.jsonc --env=\"\"",
     "types": "wrangler types",
-    "test": "npm run build && node --test tests/*.test.mjs",
-    "test:truth-live": "node scripts/live-truth-test.mjs"
+    "test": "npm run build && node --test --test-concurrency=1 tests/*.test.mjs",
+    "test:truth-live": "node scripts/live-truth-test.mjs",
+    "telegram:setup": "node scripts/setup-telegram-bot.mjs",
+    "build:staging": "node scripts/build-mcp-app.mjs && wrangler deploy --dry-run --config wrangler.jsonc --env staging --outdir dist-staging",
+    "deploy:staging": "node scripts/build-mcp-app.mjs && wrangler deploy --config wrangler.jsonc --env staging",
+    "deploy:prod": "node ../scripts/pre-deploy-check.mjs && node scripts/build-mcp-app.mjs && wrangler deploy --config wrangler.jsonc --env production",
+    "tail:staging": "wrangler tail --config wrangler.jsonc --env staging",
+    "tail:prod": "wrangler tail --config wrangler.jsonc --env production",
+    "migrate:staging": "wrangler d1 migrations apply DB --remote --config wrangler.jsonc --env staging",
+    "build:development": "npm run build:staging",
+    "deploy:development": "npm run deploy:staging",
+    "migrate:development": "npm run migrate:staging",
+    "secrets:doctor": "node scripts/secrets-store-doctor.mjs",
+    "secrets:test": "node --test tests/secrets-store-doctor.test.mjs tests/trinity-master-secrets.test.mjs tests/trinity-master-wrangler.test.mjs tests/trinity-master-provider-resolution.test.mjs"
   },
   "dependencies": {
-    "@modelcontextprotocol/server": "2.0.0",
-    "agents": "0.24.0",
-    "zod": "4.6.5"
+    "@cloudflare/puppeteer": "^1.4.0",
+    "@modelcontextprotocol/ext-apps": "2.0.4",
+    "@modelcontextprotocol/server": "2.4.0",
+    "@noble/curves": "2.4.0",
+    "@noble/hashes": "2.4.0",
+    "agents": "0.33.0",
+    "qrcode-generator": "2.0.4",
+    "zod": "4.6.7"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "5.20261011.1",
+    "@cloudflare/workers-types": "5.20261104.1",
+    "esbuild": "0.28.2",
     "miniflare": "5.20261006.1-alpha",
-    "wrangler": "4.149.0"
+    "wrangler": "4.157.0"
   },
   "overrides": {
+    "@puppeteer/browsers": "3.2.6",
     "@modelcontextprotocol/client": "2.3.1",
-    "@modelcontextprotocol/sdk": "1.32.1"
+    "@modelcontextprotocol/sdk": "1.32.1",
+    "undici": "7.30.1"
   },
   "allowScripts": {
     "core-js-pure@3.50.0": true,
     "esbuild@0.28.2": true,
     "esbuild@0.28.1": true,
     "workerd@1.20260930.2": true,
-    "workerd@1.20261006.1": true
+    "workerd@1.20261006.1": true,
+    "workerd@1.20261012.1": true
   }
 }

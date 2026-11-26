@@ -1,0 +1,247 @@
+# ==============================================================================
+# TRINITY OMNI-CORE — CLOUDFLARE EDGE ENGINE CONFIGURATION
+# Root Architect: Basterix (Sabo Ivan)
+# Domains: auru.space (Production) | auru.dev (Staging & System API Bridge)
+# Account ID: b60342e5e52f5646fbd4e913bb409334
+# ==============================================================================
+
+name = "trinity"
+main = "Trinity/src/index.js"
+account_id = "b60342e5e52f5646fbd4e913bb409334"
+compatibility_date = "2026-10-11"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+keep_vars = true
+
+# ------------------------------------------------------------------------------
+# 1. DOMÉNOVÉ SMEROVANIE & CUSTOM DOMAINS (PRODUKCIA)
+# ------------------------------------------------------------------------------
+routes = [
+  { pattern = "auru.space", custom_domain = true }
+]
+
+# Compatibility build entry. Releases use Trinity/wrangler.jsonc.
+[[rules]]
+type = "Data"
+globs = ["**/*.webp"]
+fallthrough = true
+
+[[rules]]
+type = "Text"
+globs = ["**/*.html", "**/*.css", "**/*.js.txt"]
+fallthrough = true
+
+[triggers]
+crons = ["*/30 * * * *", "0 0 * * *", "0 11 * * *"]
+
+# ------------------------------------------------------------------------------
+# 2. SYSTÉMOVÉ PREMENNÉ (VEREJNÉ METADÁTA)
+# Tajomstvá a API tokeny sa spravujú výhradne cez `wrangler secret put`
+# ------------------------------------------------------------------------------
+[vars]
+ENVIRONMENT = "production"
+TRINITY_ENV = "production"
+SYSTEM_NAME = "TRINITY OMNI-CORE"
+SYSTEM_VERSION = "11.0.0"
+ROOT_OPERATOR_ALIAS = "Basterix"
+TRUTH_POLICY_ENFORCED = "true"
+SOVEREIGN_LOCK_ACTIVE = "true"
+LOCAL_BRIDGE_HOST = "127.0.0.1"
+LOCAL_BRIDGE_PORT = "7788"
+CF_ACCOUNT_ID = "b60342e5e52f5646fbd4e913bb409334"
+GOOGLE_PROJECT_ID = "tangential-osprey-dl7cp"
+FIREBASE_PROJECT_ID = "trinity-morhfeus-20261001"
+TRINITY_GITHUB_REPO = "uscolective-byte/Trinity-antigravity"
+TRINITY_GITHUB_BRANCH = "main"
+
+# ------------------------------------------------------------------------------
+# 3. D1 DATABASE: SOVEREIGN LEDGER & SYSTEM STATE
+# Nemenný reťazec dôkazov (TruthGuard), transakcie, nonces a systémové tabuľky
+# ------------------------------------------------------------------------------
+[[d1_databases]]
+binding = "DB"
+database_name = "trinity-v03"
+database_id = "ca8ea24e-f7db-431e-b8bf-97f713ae4533"
+migrations_dir = "Trinity/migrations"
+
+[[d1_databases]]
+binding = "TRINITY_D1"
+database_name = "trinity-v03"
+database_id = "ca8ea24e-f7db-431e-b8bf-97f713ae4533"
+migrations_dir = "Trinity/migrations"
+
+[[d1_databases]]
+binding = "rea"
+database_name = "trinity-db"
+database_id = "5b792055-97cf-4d8a-8145-d588c83c54df"
+
+[[d1_databases]]
+binding = "trinity_basterix"
+database_name = "trinity-pc-bridge"
+database_id = "39be1f38-f710-4df4-9202-5bdbb8febf57"
+
+# ------------------------------------------------------------------------------
+# 4. KV NAMESPACES: CACHE, RATE-LIMITING & SESSIONS
+# Ultra-rýchla pamäť s nízkou latenciou pre tokeny a dočasné relácie
+# ------------------------------------------------------------------------------
+[[kv_namespaces]]
+binding = "TRINITY_KV"
+id = "0b92ed2717d742daa860f1827797297f"
+
+[[kv_namespaces]]
+binding = "Mastermind"
+id = "0b92ed2717d742daa860f1827797297f"
+
+[[kv_namespaces]]
+binding = "PC_STATE"
+id = "7eb48d414296418f9c60d87f8c602956"
+
+# ------------------------------------------------------------------------------
+# 5. R2 OBJECT STORAGE: ARTIFACTS, BUILDS & BACKUPS
+# Úložisko pre vygenerovaný kód, buildy, mediálne súbory a snapshoty
+# ------------------------------------------------------------------------------
+[[r2_buckets]]
+binding = "R2_STORAGE"
+bucket_name = "trinity-artifacts"
+
+[[r2_buckets]]
+binding = "TRINITY_STORAGE"
+bucket_name = "trinity-artifacts"
+
+[[r2_buckets]]
+binding = "ARTIFACTS"
+bucket_name = "trinity-artifacts"
+
+# ------------------------------------------------------------------------------
+# 6. VECTORIZE: EPIZODICKÁ A SÉMANTICKÁ PAMÄŤ (RAG)
+# Vektorová databáza pre dlhodobý kontext, históriu rozhodnutí a index kódu
+# ------------------------------------------------------------------------------
+[[vectorize]]
+binding = "VECTOR_INDEX"
+index_name = "trinity-vector-index"
+
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "trinity-vector-index"
+
+[[vectorize]]
+binding = "AURA_MEMORY_VECTOR"
+index_name = "aura-memory"
+
+# ------------------------------------------------------------------------------
+# 7. WORKERS AI & DURABLE OBJECTS
+# ------------------------------------------------------------------------------
+[ai]
+binding = "AI"
+
+[[durable_objects.bindings]]
+name = "Brain"
+class_name = "TrinityAgent"
+
+[[durable_objects.bindings]]
+name = "CHAT_AGENT"
+class_name = "ChatAgent"
+
+[[durable_objects.bindings]]
+name = "GUARDIAN_AGENT"
+class_name = "GuardianAgent"
+
+# ------------------------------------------------------------------------------
+# 8. STAGING ENVIRONMENT (auru.dev — VÝVOJ, TESTOVANIE A BRIDGE)
+# Tento profil sa spúšťa príkazom: npx wrangler deploy --env staging
+# ------------------------------------------------------------------------------
+[env.staging]
+name = "trinity-staging"
+routes = [
+  { pattern = "auru.dev", custom_domain = true }
+]
+
+[env.staging.vars]
+ENVIRONMENT = "staging"
+TRINITY_ENV = "staging"
+TRINITY_PREVIEW_MODE = "build-only"
+SYSTEM_NAME = "TRINITY STAGING & DEV BRIDGE"
+SYSTEM_VERSION = "11.0.0"
+ROOT_OPERATOR_ALIAS = "Basterix"
+TRUTH_POLICY_ENFORCED = "true"
+SOVEREIGN_LOCK_ACTIVE = "true"
+LOCAL_BRIDGE_HOST = "127.0.0.1"
+LOCAL_BRIDGE_PORT = "7788"
+CF_ACCOUNT_ID = "b60342e5e52f5646fbd4e913bb409334"
+GOOGLE_PROJECT_ID = "tangential-osprey-dl7cp"
+FIREBASE_PROJECT_ID = "trinity-morhfeus-20261001"
+TRINITY_GITHUB_REPO = "uscolective-byte/Trinity-antigravity"
+TRINITY_GITHUB_BRANCH = "main"
+
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "trinity-development"
+database_id = "1cce5249-e044-4c93-868c-0df534a778b5"
+migrations_dir = "Trinity/migrations"
+
+[[env.staging.d1_databases]]
+binding = "TRINITY_D1"
+database_name = "trinity-development"
+database_id = "1cce5249-e044-4c93-868c-0df534a778b5"
+migrations_dir = "Trinity/migrations"
+
+[[env.staging.d1_databases]]
+binding = "rea"
+database_name = "trinity-db"
+database_id = "5b792055-97cf-4d8a-8145-d588c83c54df"
+
+[[env.staging.d1_databases]]
+binding = "trinity_basterix"
+database_name = "trinity-pc-bridge"
+database_id = "39be1f38-f710-4df4-9202-5bdbb8febf57"
+
+[[env.staging.kv_namespaces]]
+binding = "TRINITY_KV"
+id = "0b92ed2717d742daa860f1827797297f"
+
+[[env.staging.kv_namespaces]]
+binding = "Mastermind"
+id = "0b92ed2717d742daa860f1827797297f"
+
+[[env.staging.kv_namespaces]]
+binding = "PC_STATE"
+id = "7eb48d414296418f9c60d87f8c602956"
+
+[[env.staging.r2_buckets]]
+binding = "R2_STORAGE"
+bucket_name = "trinity-artifacts"
+
+[[env.staging.r2_buckets]]
+binding = "TRINITY_STORAGE"
+bucket_name = "trinity-artifacts"
+
+[[env.staging.r2_buckets]]
+binding = "ARTIFACTS"
+bucket_name = "trinity-artifacts"
+
+[[env.staging.vectorize]]
+binding = "VECTOR_INDEX"
+index_name = "trinity-vector-index"
+
+[[env.staging.vectorize]]
+binding = "VECTORIZE"
+index_name = "trinity-vector-index"
+
+[[env.staging.vectorize]]
+binding = "AURA_MEMORY_VECTOR"
+index_name = "aura-memory"
+
+[env.staging.ai]
+binding = "AI"
+
+[exports.TrinityAgent]
+type = "durable-object"
+storage = "sqlite"
+
+[exports.ChatAgent]
+type = "durable-object"
+storage = "sqlite"
+
+[exports.GuardianAgent]
+type = "durable-object"
+storage = "sqlite"

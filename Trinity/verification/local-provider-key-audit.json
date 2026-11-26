@@ -1,0 +1,24 @@
+{
+  "checked_at": "2026-10-25T19:27:49.434Z",
+  "scope": "known-local-trinity-env-only",
+  "secret_values_exported": false,
+  "provider_accounts_created": false,
+  "checks": [
+    {
+      "provider": "openai",
+      "source_file": "C:/Users/saboi/OneDrive/trinity/.env",
+      "variable": "OPENAI_API_KEY",
+      "present": false,
+      "verified": false,
+      "status": "missing-or-placeholder-or-unrecognized-format"
+    },
+    {
+      "provider": "anthropic",
+      "source_file": "C:/Users/saboi/OneDrive/trinity/.env",
+      "variable": "ANTHROPIC_API_KEY",
+      "present": false,
+      "verified": false,
+      "status": "missing-or-placeholder-or-unrecognized-format"
+    }
+  ]
+}

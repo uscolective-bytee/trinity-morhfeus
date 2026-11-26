@@ -8,19 +8,21 @@ import optimizer from './legacy-workers/aura_optimizer.js';
 import planner from './legacy-workers/aura_planner.js';
 import sentinel from './legacy-workers/aura_sentinel.js';
 import tester from './legacy-workers/aura_tester.js';
+import {skillRegistry} from '../src/skillRegistry.js';
 
 const VERSION='2.0.0';
+const COMMON_AURA_SKILLS=['aura.skills','aura.execute_skill'];
 const roles={
-  aura_analyzer:{worker:analyzer,actions:['analyze.code','analyze.data','analyze.system','aura.status'],idempotent:['analyze.code']},
-  aura_architect:{worker:architect,actions:['architect.design','architect.edge.add','architect.graph','architect.node.add','aura.status'],idempotent:['architect.design','architect.edge.add','architect.node.add'],approval:['architect.edge.add','architect.node.add']},
-  aura_codegen:{worker:codegen,actions:['codegen.generate','codegen.migration','codegen.sql','aura.status'],idempotent:['codegen.generate']},
-  aura_deployer:{worker:deployer,actions:['deploy.stage','deploy.list','deploy.complete','deploy.rollback','aura.status'],idempotent:['deploy.stage','deploy.complete','deploy.rollback'],approval:['deploy.stage','deploy.complete','deploy.rollback']},
-  aura_evolver:{worker:evolver,actions:['evolve.propose','evolve.history','evolve.reflections','aura.status'],idempotent:['evolve.propose']},
-  aura_memory:{worker:memory,actions:['memory.synthesize','memory.consolidate','memory.semantic.search','aura.status'],idempotent:['memory.synthesize','memory.consolidate']},
-  aura_optimizer:{worker:optimizer,actions:['optimize.system','optimize.query','optimize.tokens','aura.status']},
-  aura_planner:{worker:planner,actions:['plan.create','plan.decompose','plan.goals','aura.status'],idempotent:['plan.create']},
-  aura_sentinel:{worker:sentinel,actions:['sentinel.alert','sentinel.monitor','sentinel.scan','aura.status'],idempotent:['sentinel.alert']},
-  aura_tester:{worker:tester,actions:['test.endpoint','test.generate','test.system','test.validate','aura.status'],approval:['test.endpoint']}
+  aura_analyzer:{worker:analyzer,actions:['analyze.code','analyze.data','analyze.system','aura.status',...COMMON_AURA_SKILLS],idempotent:['analyze.code']},
+  aura_architect:{worker:architect,actions:['architect.design','architect.review','architect.evaluate','architect.diagram','architect.edge.add','architect.graph','architect.node.add','aura.status',...COMMON_AURA_SKILLS],idempotent:['architect.design','architect.edge.add','architect.node.add'],approval:['architect.edge.add','architect.node.add']},
+  aura_codegen:{worker:codegen,actions:['codegen.generate','codegen.refactor','codegen.scaffold','codegen.docs','codegen.migration','codegen.sql','aura.status',...COMMON_AURA_SKILLS],idempotent:['codegen.generate','codegen.refactor','codegen.scaffold']},
+  aura_deployer:{worker:deployer,actions:['deploy.stage','deploy.list','deploy.complete','deploy.rollback','aura.status',...COMMON_AURA_SKILLS],idempotent:['deploy.stage','deploy.complete','deploy.rollback'],approval:['deploy.stage','deploy.complete','deploy.rollback']},
+  aura_evolver:{worker:evolver,actions:['evolve.propose','evolve.history','evolve.reflections','aura.status',...COMMON_AURA_SKILLS],idempotent:['evolve.propose']},
+  aura_memory:{worker:memory,actions:['memory.synthesize','memory.consolidate','memory.semantic.search','aura.status',...COMMON_AURA_SKILLS],idempotent:['memory.synthesize','memory.consolidate']},
+  aura_optimizer:{worker:optimizer,actions:['optimize.system','optimize.query','optimize.tokens','aura.status',...COMMON_AURA_SKILLS]},
+  aura_planner:{worker:planner,actions:['plan.task','plan.project','plan.sprint','plan.timeline','plan.create','plan.decompose','plan.goals','aura.status',...COMMON_AURA_SKILLS],idempotent:['plan.task','plan.project','plan.create']},
+  aura_sentinel:{worker:sentinel,actions:['sentinel.alert','sentinel.monitor','sentinel.scan','aura.status',...COMMON_AURA_SKILLS],idempotent:['sentinel.alert']},
+  aura_tester:{worker:tester,actions:['test.endpoint','test.generate','test.system','test.validate','aura.status',...COMMON_AURA_SKILLS],approval:['test.endpoint']}
 };
 
 const secure=response=>{const out=new Response(response.body,response);out.headers.set('Cache-Control','no-store');out.headers.set('X-Content-Type-Options','nosniff');out.headers.set('Referrer-Policy','no-referrer');return out;};
@@ -66,6 +68,26 @@ export default {
       const key=call.idempotency_key;
       if(mutating&&(!key||!/^[0-9a-f-]{36}$/i.test(key)))throw Object.assign(new Error('Mutujúca akcia vyžaduje UUID idempotency_key.'),{status:400});
       if(mutating&&env.IDEMPOTENCY){const stored=await env.IDEMPOTENCY.get(`aura:${env.WORKER_ROLE}:${key}`,'json');if(stored)return json({...stored,reused:true},stored.ok===false?500:200);}
+      if(call.action==='aura.skills'){
+        const list=skillRegistry.list();
+        const result={ok:true,role:env.WORKER_ROLE,skills_count:list.length,skills:list,traceId,service_version:VERSION};
+        await audit(env,ctx,{role:env.WORKER_ROLE,action:call.action,traceId,status:'completed'});
+        return json(result,200);
+      }
+      if(call.action==='aura.execute_skill'){
+        const skillName=call.data?.skill;
+        if(!skillName||typeof skillName!=='string')throw Object.assign(new Error('Chýba názov skillu.'),{status:400});
+        const skillArgs = Array.isArray(call.data?.args)
+          ? call.data.args
+          : call.data?.params !== undefined
+            ? [call.data.params]
+            : [];
+        const skillResult=await skillRegistry.execute(skillName,...skillArgs,env);
+        const result={ok:true,role:env.WORKER_ROLE,skill:skillName,result:skillResult,traceId,service_version:VERSION};
+        if(mutating&&env.IDEMPOTENCY)await env.IDEMPOTENCY.put(`aura:${env.WORKER_ROLE}:${key}`,JSON.stringify(result),{expirationTtl:86400});
+        await audit(env,ctx,{role:env.WORKER_ROLE,action:call.action,traceId,status:'completed'});
+        return json(result,200);
+      }
       const forwarded=new Request(request.url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...call,traceId})});
       const response=await role.worker.fetch(forwarded,env,ctx);
       const payload=await response.json().catch(()=>({ok:false,error:'Aura rola vrátila neplatnú odpoveď.'}));

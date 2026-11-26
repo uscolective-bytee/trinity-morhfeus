@@ -1,0 +1,187 @@
+{
+  "schema": "TRINITY_SOVEREIGN_DEPLOYMENT_RECEIPT_V3",
+  "system": "TRINITY OMNI-CORE",
+  "version": "11.0.0",
+  "root_operator": "Basterix (Sabo Ivan)",
+  "timestamp": "2026-11-01T00:42:36.726Z",
+  "exit_code": 0,
+  "cloudflare_zones": {
+    "auru.space": {
+      "zone_id": "8f25a7259a78f0fe860fa0cc5e43f1bd",
+      "status": "active",
+      "paused": false,
+      "custom_domain_worker": "trinity",
+      "cert_id": "66272470-453a-4551-958b-73f56759ae08",
+      "http_root_status": 200,
+      "http_api_status": 200
+    },
+    "auru.dev": {
+      "zone_id": "b1b9b5701776b7f990d00535ad3a43aa",
+      "status": "active",
+      "paused": false,
+      "custom_domain_worker": "trinity-staging",
+      "cert_id": "c8e29017-23a0-4281-b0bf-cc417636bd83",
+      "http_api_status": 302,
+      "cloudflare_access_gate": "ACTIVE_302_REDIRECT_TO_ZERO_TRUST_LOGIN",
+      "note": "Zone-level Cloudflare Access policy requires Zero Trust Dashboard Service Auth bypass for /api/* (API returned HTTP 403 code 10000/1010 with Wrangler OAuth scope)."
+    }
+  },
+  "workers_deployed": {
+    "production": {
+      "worker_name": "trinity",
+      "domain": "https://auru.space",
+      "dry_run_exit_code": 0,
+      "deploy_exit_code": 0,
+      "active_bindings": {
+        "d1_sovereign_ledger": true,
+        "trinity_d1": true,
+        "kv_mastermind": true,
+        "kv_pc_state": true,
+        "trinity_kv": true,
+        "r2_artifacts": true,
+        "trinity_storage": true,
+        "vectorize_index": true,
+        "aura_memory_vector": true,
+        "workers_ai": true,
+        "memory_service": true
+      }
+    },
+    "staging": {
+      "worker_name": "trinity-staging",
+      "domain": "https://auru.dev",
+      "version_id": "52a5a587-cc65-409a-800f-b08c99ecaa00",
+      "dry_run_exit_code": 0,
+      "deploy_exit_code": 0
+    }
+  },
+  "d1_migrations": {
+    "production_trinity_v03": {
+      "database_id": "ca8ea24e-f7db-431e-b8bf-97f713ae4533",
+      "migrations_applied_through": "0055_sovereign_ledger_v3.sql",
+      "exit_code": 0
+    },
+    "staging_trinity_development": {
+      "database_id": "1cce5249-e044-4c93-868c-0df534a778b5",
+      "migrations_applied_through": "0055_sovereign_ledger_v3.sql",
+      "exit_code": 0
+    }
+  },
+  "vectorize_indexes": [
+    {
+      "binding": "VECTORIZE",
+      "index_name": "trinity-vector-index",
+      "dimensions": 768,
+      "metric": "cosine",
+      "status": "VERIFIED_ACTIVE"
+    },
+    {
+      "binding": "AURA_MEMORY_VECTOR",
+      "index_name": "aura-memory",
+      "dimensions": 768,
+      "metric": "cosine",
+      "status": "VERIFIED_ACTIVE"
+    }
+  ],
+  "secrets_initialized": {
+    "TRINITY_ROOT_HASH": {
+      "production_exit_code": 0,
+      "staging_exit_code": 0
+    },
+    "SOVEREIGN_LEDGER_SECRET_KEY": {
+      "production_exit_code": 0,
+      "staging_exit_code": 0
+    },
+    "TRINITY_BRIDGE_TOKEN": {
+      "production_exit_code": 0,
+      "staging_exit_code": 0
+    },
+    "FIRECRAWL_API_KEY_OR_FIRECRAWL": {
+      "status": "configured"
+    },
+    "GOOGLE_CLIENT_SECRET": {
+      "status": "AWAITING_EXTERNAL_SECRET_FROM_OWNER"
+    },
+    "FIREBASE_SERVICE_ACCOUNT_KEY": {
+      "status": "AWAITING_EXTERNAL_SECRET_FROM_OWNER"
+    }
+  },
+  "sovereign_lock_and_capabilities_verification": {
+    "unverified_bridge_http_status": 403,
+    "unverified_bridge_response_status": "SECURITY_BLOCKED",
+    "unverified_tamper_receipt": "receipt:trinity:6a389119cf67f122",
+    "omni_core_500_improvements_http_status": 200,
+    "omni_core_500_improvements_count": 500,
+    "live_capabilities": {
+      "sovereign_kernel": {
+        "status": "VERIFIED_ACTIVE",
+        "module": "sovereign-core-v3.js"
+      },
+      "omni_core_500_registry": {
+        "status": "VERIFIED_ACTIVE",
+        "module": "omni-core-500-registry.js",
+        "total_improvements": 500,
+        "part_1_system_desktop_250": 250,
+        "part_2_architecture_omni_core_250": 250,
+        "foundational_pillars_75": 75,
+        "by_layer": {
+          "L5_EXECUTION_ENGINE": 247,
+          "L7_EVOLUTION_ENGINE": 54,
+          "L3_MEMORY_ENGINE": 54,
+          "L6_SECURITY_CORE": 59,
+          "L1_TRINITY_KERNEL": 22,
+          "L2_ORCHESTRATION": 30,
+          "L4_SOVEREIGN_LEDGER": 34
+        }
+      },
+      "sovereign_lock_hmac": {
+        "status": "VERIFIED_ACTIVE",
+        "durable_nonce_d1": true,
+        "durable_nonce_kv": true
+      },
+      "truth_guard_v3": {
+        "status": "VERIFIED_ACTIVE",
+        "module": "truth.js"
+      },
+      "trinity_auth_core": {
+        "status": "VERIFIED_ACTIVE",
+        "fail_closed": true,
+        "module": "trinity-auth-core.js"
+      },
+      "omnidev_ast_diagnostics": {
+        "status": "VERIFIED_ACTIVE",
+        "module": "omnidev-diagnostics.js",
+        "local_bridge_port": 7788
+      },
+      "workers_ai": {
+        "status": "VERIFIED_ACTIVE"
+      },
+      "d1_sovereign_ledger": {
+        "status": "VERIFIED_ACTIVE"
+      },
+      "trinity_kv": {
+        "status": "VERIFIED_ACTIVE"
+      },
+      "r2_artifacts": {
+        "status": "VERIFIED_ACTIVE"
+      },
+      "vectorize_index": {
+        "status": "VERIFIED_ACTIVE",
+        "index_name": "trinity-vector-index",
+        "dimensions": 768,
+        "metric": "cosine"
+      },
+      "google_oauth": {
+        "status": "CONFIGURED_DISABLED"
+      },
+      "firecrawl_scrape": {
+        "status": "CONFIGURED"
+      },
+      "firebase_manage": {
+        "status": "MISSING_CREDENTIALS"
+      },
+      "telegram_bridge": {
+        "status": "CONFIGURED"
+      }
+    }
+  }
+}

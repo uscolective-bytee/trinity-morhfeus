@@ -10,7 +10,7 @@
     "storage": "WDC PC SN530 NVMe 256GB"
   },
   "ollama": {
-    "model": "qwen3:4b-instruct",
+    "model": "qwen3.5:4b",
     "threads": 6,
     "context": 4096,
     "max_output_tokens": 600,

@@ -1,3 +1,10 @@
+/**
+ * @module TRINITY_OMNI_CORE
+ * @subsystem LOCAL_BRIDGE_GATEWAY
+ * @author Basterix (Root Architect)
+ * @license Sovereign Irrevocable Covenant
+ * @description Modul policy.mjs (Local-Gateway/src/policy.mjs) v ekosystéme TRINITY OMNI-CORE.
+ */
 import path from 'node:path';
 import {lstat, realpath} from 'node:fs/promises';
 
@@ -10,7 +17,13 @@ export const CAPABILITIES=Object.freeze([
   {id:'deploy',risk:'critical',approval:true},
   {id:'share',risk:'critical',approval:true},
   {id:'upload',risk:'critical',approval:true},
-  {id:'upgrade',risk:'critical',approval:true}
+  {id:'upgrade',risk:'critical',approval:true},
+  {id:'open_app',risk:'change',approval:true},
+  {id:'open_url',risk:'read',approval:false},
+  {id:'open_file',risk:'read',approval:false},
+  {id:'screenshot',risk:'read',approval:false},
+  {id:'notify',risk:'read',approval:false},
+  {id:'system_info',risk:'read',approval:false}
 ]);
 
 export const ACTIONS=new Set(CAPABILITIES.map(item=>item.id));
@@ -33,10 +46,20 @@ async function nearestExisting(target){
 }
 
 export async function resolveSafePath(workspaceRoot,relativePath,{allowMissing=false}={}){
-  if(typeof relativePath!=='string'||!relativePath.trim()||relativePath.includes('\0')||path.isAbsolute(relativePath))throw new Error('Cesta musí byť relatívna k Morhfeus.');
-  const segments=relativePath.replaceAll('\\','/').split('/').filter(Boolean);
-  if(segments.some(segment=>segment==='..'||BLOCKED_SEGMENTS.has(segment.toLowerCase())||BLOCKED_NAMES.some(rule=>rule.test(segment))))throw new Error('Táto cesta je chránená.');
+  if(typeof relativePath!=='string'||!relativePath.trim()||relativePath.includes('\0'))throw new Error('Cesta musí byť relatívna k Morhfeus.');
   const root=await realpath(workspaceRoot);
+  let relPath=relativePath;
+  if(path.isAbsolute(relativePath)){
+    const resolvedCandidate=path.resolve(relativePath);
+    let realCandidate=resolvedCandidate;
+    try{realCandidate=await realpath(resolvedCandidate);}catch{}
+    if(!isInside(root,resolvedCandidate)||!isInside(root,realCandidate))throw new Error('Cesta je mimo pracovného priestoru.');
+    relPath=path.relative(root,resolvedCandidate);
+    if(relPath==='')relPath='.';
+  }
+  const segments=relPath.replaceAll('\\','/').split('/').filter(Boolean);
+  if(segments.some(segment=>segment==='..'||BLOCKED_SEGMENTS.has(segment.toLowerCase())||BLOCKED_NAMES.some(rule=>rule.test(segment))))throw new Error('Táto cesta je chránená.');
+  // root resolved above
   const target=path.resolve(root,...segments);
   if(!isInside(root,target))throw new Error('Cesta je mimo pracovného priestoru.');
   const existing=await nearestExisting(target);
@@ -52,10 +75,20 @@ export async function resolveSafePath(workspaceRoot,relativePath,{allowMissing=f
 }
 
 export const RUN_TASKS=Object.freeze({
+  'node-version':{command:process.execPath,args:['--version']},
+  'python-version':{command:process.env.TRINITY_PYTHON_PATH||'python',args:['--version']},
+  'cmd-version':{command:'cmd.exe',args:['/d','/c','ver']},
   'git-status':{command:'git',args:['status','--short']},
   'diff-check':{command:'git',args:['diff','--check']},
   tests:{command:'npm',args:['test']},
-  build:{command:'npm',args:['run','build']}
+  build:{command:'npm',args:['run','build']},
+  deploy:{command:'npm',args:['run','deploy']},
+  start:{command:'npm',args:['start']},
+  'run-start':{command:'npm',args:['run','start']},
+  'docker-compose-up':{command:'docker',args:['compose','up','-d']},
+  'docker-compose-ps':{command:'docker',args:['compose','ps']},
+  'docker-ps':{command:'docker',args:['ps']},
+  'git-log':{command:'git',args:['log','-n','5','--oneline']}
 });
 
 export function validateProject(value){
